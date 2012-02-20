@@ -1,0 +1,2179 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2006 by Wybo Dekker <wybo@dekkerdocumenten.nl>
+% -------------------------------------------------------
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.2
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.2 or later is part of all distributions of LaTeX
+% version 1999/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+%<*driver>
+\ProvidesFile{isodoc.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<class>\ProvidesClass{isodoc}%
+%<*class>
+           [2012/02/19 v0.9 isodoc class for letters and invoices]
+%</class>
+%<class>\ifx\pdfoutput\undefined\else%
+%<class>\ifnum\pdfoutput=1\else\ClassError{isodoc}{Compile me with pdflatex or xelatex!}{}
+%<class>\fi\fi
+%<*driver>
+\documentclass{ltxdoc}
+\usepackage[l2tabu,orthodox]{nag}
+\usepackage{isodocsymbols,charter}
+\usepackage{ctable,pdfpages,paralist,sverb,ltablex}
+\parindent0pt\parskip1ex
+\PageIndex
+\IndexPrologue{\section*{Index}}
+\newcommand{\FIG}[3]{ % pdfname label caption
+  \ctable[label={#2},caption={#3},figure,botcap,framerule=.5pt]{@{}c@{}}{}{%
+    \includegraphics[width=\textwidth]{#1}
+  }
+}
+\newcommand{\OPTS}[3]{
+  \smallskip\noindent
+  \begin{tabularx}{\hsize}{@{}lX@{}}
+    \multicolumn{2}{@{}l}{\bfseries #1}\NN
+    \multicolumn{2}{@{}p{\hsize}@{}}{#2}\NN\NN
+    #3
+  \end{tabularx}
+}
+\def\T#1{\texttt{#1}}
+\def\C#1{\texttt{$\mathtt{\backslash}$#1}}
+\def\CMP#1{\C{#1}\marginpar{\C{#1}}}
+\begin{document}
+  \DocInput{isodoc.dtx}
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+% \changes{v0.1}{2006/03/18}{Initial version}
+% \changes{v0.2}{2007/04/05}{added options phoneprefix, routingno, logoaddress
+%                            accountname now optional
+%                            accountnumber $\Rightarrow$ accountno
+%                            german and french translations corrected
+%                            indents removed in header fields
+%                            expect printer to have more unprintable border
+%                            ascriptiontext $\Rightarrow$ accountnametext for dutch
+%                            Interdocument language changes now work;
+%                            Vatno, if defined, is reported with accountdata;
+%                            country in returnaddress now separated with dot;
+%                            option changes kept local to the letter/invoice;
+%                            English/American accountname text adapted
+%                           }
+% \changes{v0.3}{2007/08/21}{several errors in documentation corrected
+%                           }
+% \changes{v0.3b}{2007/08/21}{non-zero parskip generated whitespace in standard textblocks;
+%                             several accept positions fixed,
+%                             added option shift,
+%                             whitespace problems solved,
+%                             added option currency,
+%                             added option cityzip - without documentation
+%                            }
+% \changes{v0.4}{2008/05/01}{options shift, currency, cityzip added
+%                            norwegian translations added (thanks Sveinung Heggen)
+%                           }
+% \changes{v0.5}{2008/07/12}{text misplacement in subject-less letters
+%                            corrected
+%                            norwegian translations corrected
+%                           }
+% \changes{v0.6}{2008/07/12}{moved all documentation files in subdirectory doc,
+%                            because files appeared to be wrongly placed on the 
+%                            TeX Collection DVD
+%                            Some minor corrections
+%                           }
+% \changes{v0.7}{2010/01/02}{using eurosym package instead of marvosym;
+%                            using frenchb package instead of french;
+%                            added addresswidth option, default stays 2 cols;
+%                            changes suggested by Fabrice Niessen (thanks!):
+%                            added header/noheader options;
+%                            added bodyshift option;
+%                            date format can be yyyy-mm-dd or a literal `today';
+%                            added forcedate option to enter anything for date;
+%                            added foldleft and foldright options, default stays right;
+%                            headingcolor, if defined, colors fancy headings;
+%                            headcolor, if defined, colors headings in header and footer;
+%                            foldmarkcolor, if defined, colors foldmark
+%                           }
+%
+% \DoNotIndex{%
+% \ , \", \', \@auxout, \AtBeginDocument, \AtEndDocument, \Cbox, \CurrentOption,
+% \DeclareOption, \DescribeMacro, \LARGE, \Large, \LoadClass, \ML, \NN,
+% \PassOptionsToClass, \ProcessOptions, \RequirePackage, \TPGrid, \Tbox, \\, \^,
+% \`, \aa, \addtocounter, \advance, \barsep, \baselineskip, \begin, \bfseries,
+% \bgroup, \clearpage, \cmidrule, \colorbox, \csname, \def, \define@key,
+% \definecolor, \egroup, \else, \empty, \end, \endcsname, \enspace,
+% \expandafter, \fancyhead, \fancyhf, \fi, \filedat, \fileversion,
+% \footnotesize, \geometry, \hfill, \hsize, \hspace, \ht, \if@twoside,
+% \ifcase, \ifdim, \ifnum, \ifx, \ignorespaces, \immediate, \includegraphics,
+% \lastpage@putlabel, \let, \long, \multicolumn, \newcommand, \newcount,
+% \newdimen, \newenvironment, \newif, \newlabel, \noindent, \number, \o, \or,
+% \pageref, \pagestyle, \paperheight, \paperwidth, \par, \parindent, \parskip,
+% \pdfinfo, \qquad, \quad, \raggedright, \raisebox, \relax,
+% \rightskip, \rule, \scriptsize, \scshape, \selectlanguage, \setbox,
+% \setcounter, \setkeys, \sffamily, \space, \string, \tbfigures, \textbf,
+% \textbullet, \thepage, \thispagestyle, \undefined, \unskip, \usepackage,
+% \vbox, \vfill, \vspace, \write
+% }
+%
+% \GetFileInfo{isodoc.dtx}
+%
+% \title{The \textsf{isodoc} class\thanks{This document
+%   corresponds to \textsf{isodoc}~\fileversion, dated \filedate.}\\for
+%   letters, invoices, and more}
+% \author{Wybo Dekker \\ \texttt{wybo@dekkerdocumenten.nl}}
+%
+% \maketitle
+%
+% \begin{abstract}\noindent
+% The \texttt{isodoc} class can be used for the preparation of letters,
+% invoices, and, in the future, similar documents.
+% Documents are set up with options, thus making the class easily adaptable to
+% user's wishes and extensible for other document types.
+% \\[2ex]
+% \textbf{Keywords:} letter, invoice, key/value, \textsc{nen1026}
+%
+% \end{abstract}
+% \tableofcontents
+% \section{Introduction}
+%
+% This class is intended to be used for the preparation of letters and
+% invoices. Its starting point was Victor Eijkhout's NTG
+% {\texttt{brief}} class\footnote{CTAN: ntgclass/briefdoc.pdf}, which
+% implements the \textsc{nen 1026} standard. The \texttt{brief} class
+% does not provide facilities for invoices and it is not easily
+% extensible.
+%
+% The goal for the \texttt{isodoc} class is to be extensible and easy to
+% use by providing \textsl{key=value} configuration. Furthermore, texts
+% that need to be placed on prescribed positions on the page (there are
+% many such texts) are positioned by using the {\texttt{textpos}}
+% package.\footnote{CTAN: textpos/textpos.pdf} This provides a very
+% robust construction of the page.
+%
+% The class itself contains many general definitions, but variable data, such as
+% opening, closing,
+% address and many more, have to be defined using \textsl{key=value}
+% definitions, either in the document or
+% in a style file. The latter is indicated for definitions that don't vary on a
+% per document basis, such as your company name, address, email address and so
+% on. Thus if you run a company and also are the secretary of a club,
+% you would have style files for each of them, plus one for your private letters
+% or invoices.\footnote{If you archive your documents in their source form
+% only, it may be wise to work without a style file and set all options in the
+% document itself!}
+%
+% The general setup of a document producing one or more letters is (see
+% figures~\ref{letter1}--\ref{logo2}, page~\pageref{logo1}--\pageref{logo2},
+% for examples):
+% \begin{verbatim}
+%     \documentclass{isodoc}
+%     \usepackage{<somestyle>}
+%     \setupdocument{<generaloptions>}
+%     \begin{document}
+%     \letter[<addressee_specific_options>]{<letter_content>}
+%     ... more \letter calls ...
+%     \end{document}
+% \end{verbatim}
+% Similarly, the general setup of a document producing one or more invoices is
+% (figure~\ref{invoice}, page~\pageref{invoice}):
+% \begin{verbatim}
+%     \documentclass{isodoc}
+%     \usepackage{<somestyle>}
+%     \setupdocument{<generaloptions>}
+%     \begin{document}
+%     \invoice[<addressee_specific_options>]{<invoice_content>}
+%     ... more \invoice calls ...
+%     \end{document}
+% \end{verbatim}
+%
+% \section{Options}
+%
+% Options are given as key=value pairs, separated by comma's.
+% Extra comma's, including one behind the last pair, don't hurt.
+% An option argument should be enclosed in braces if it contains
+% comma's or equals signs.
+%
+% As shown in the two examples in the previous section, there are three commands
+% that can set options: |\setupdocument|, |\letter|, and |\invoice|.
+% These commands will be further explained in the \textsl{Commands} section.
+% |\setupdocument| is normally used to set options that are common to all
+% letters or invoices in the document, like your company data; the optional 
+% arguments of |\letter| and |\invoice| set only those options
+% that are different for each letter or invoice, such as the |to|
+% and |opening| options.
+%
+% This section lists and explains all available options.
+% All options can be used in both the style files and in the document
+% source, although several will normally only be used in style files (such as
+% |company|) and some only in the document source (such as |to| or |opening|).
+%
+% \OPTS{Language}{The options described here relate to the language used
+% for the isodoc interface (headings, footings, date, banking data and so
+% on.) This language is independent of the language you set with the |babel|
+% or |polyglossia| packages. So, for example, you can write your document in english and
+% use dutch for the interface. Also, use of |babel| or |polyglossia| is not required.
+%
+% Currently only a few interface languages are defined. As I am not particularly
+% strong in the translation of administrative terminology, please feel free to
+% send me corrections. And if you don't find your own language here, please send
+% me your translations and your language will be added. 
+%
+% The options below set the language, UKenglish is used by default. Preferably, the |language|
+% option should be used; the other options are there for compatibility with earlier versions.}{
+% \T{language = ...}   & sets the interface language to any language defined by the class.
+%                        Currently these are: UKenglish, USenglish, french, german, dutch, 
+%                        italian, spanish, catalan, norsk, serbian\NN
+% \T{dutch}            & a synonym for |language = dutch|, \NN
+% \T{english}          & a synonym for |language = UKenglish|,\NN
+% \T{german}           & a synonym for |language = german|,\NN
+% \T{american}         & a synonym for |language = USenglish|,\NN
+% \T{french}           & a synonym for |language = french|.\NN
+% }
+%
+% \OPTS{Logo}{Information about the sender is defined here. The logo, by
+% default, consists of a large company name on top a rule with, hanging under the rule,
+% a contact person's data.
+% You can define the latter either explicitly with the \T{logoaddress} option, 
+% or let it automatically be created from the contents of the options \T{who}, \T{street},
+% \T{prezip}, \T{zip}, \T{city}, \T{country}, and \T{foreign}, as far as you have defined those.
+% Definition in parts can be useful if you need
+% them elsewhere in your document.}{
+% \T{company = ...}    & Your company name as it should appear in the logo (if
+%                        you use the default logo) and in the return address
+%                        (where it may get overridden by the \T{returnaddress}
+%                        keyword.) For private documents, use your name or
+%                        nickname here.\NN
+% \T{logoaddress = ...}& Contact person's data; use \C{}\C{} commands for line breaks. 
+%                        If you don't define this option, the data will be constructed
+%                        from the following options.\NN
+% \T{who = ...}        & Contact person's name; probably your own name.\NN
+% \T{street = ...}     & Street in the sender's address.\NN
+% \T{city = ...}       & City in the sender's address.\NN
+% \T{zip = ...}        & Zip in the sender's address.\NN
+% \T{cityzip}          & Place zip \textsl{after} city, instead of before it (the default).\NN
+% \T{country = ...}    & Country in the sender's address. Only used if \T{foreign}
+%                        key was used.\NN
+% \T{countrycode = ...}& Sender's country code. For The Netherlands: NL\NN
+% \T{areacode = ...}   & Sender's area code. For The Netherlands: 31\NN
+% \T{foreign}          & Use this key if you send your letter to a foreign
+%                        country. With it, your country will be added to
+%                        return and logo addresses, your zip code will be
+%                        prefixed with your country code, telephone numbers will
+%                        be prefixed with +31-- (or whatever your \T{areacode}
+%                        option has been set to) instead of just a 0. In
+%                        the \C{accountdata} command, it causes \textsc{iban} en
+%                        \textsc{bic} code to be included, unless the |localbank|
+%                        option is used.\NN
+% }
+%
+% \OPTS{Address window}{The addressee's address is printed in a window. The
+% width of the window is two columns (70 mm), and its contents are vertically
+% centered in it. There are no limits to the vertical size of the
+% window, other than the physical size of the window in the envelopes you use.
+% The vertical position of the window's center is set with the \T{addresscenter}
+% keyword. Horizontally there are two options: left or right.}{
+% \T{leftaddress}       & Places the window over columns 2 and 3; this is the
+%                         default.\NN
+% \T{rightaddress}      & Places the window over columns 4 and 5.\NN
+% \T{addresscenter = ...} & Distance in mm of the center of the window from the top of the
+%                         paper; the default value is 63.5 mm, fitting for a DL
+%                         envelope for triple folded A4 (110x220mm) with a window
+%                         at 50 mm from the top, 30mm high.\footnote{The middle of
+%                         the window is at 50+30/2=65 mm from the top of the
+%                         envelope; the paper is folded (see the folding options
+%                         below) to give the folded paper a tolerance of 1.5mm on
+%                         both sides in the envelope, so the address should be
+%                         placed 1.5 mm higher at 65-1.5=63.5 mm.}\NN
+% \T{addresswidth = ...}& The address window's width. The default is 70 mm (2 columns).\NN
+% \T{to = ...}          & The addressee's address. New lines can be introduced with the \C{}\C{}
+%                         command; lines longer than 70 mm will cause extra
+%                         newlines.\NN\relax
+% \T{[no]return}        & Do or don't print a return address on top of the
+%                         addressee's address. This is useful if blank window envelopes
+%                         are used. The return address is composed from the
+%                         contents of the \T{company}, \T{street}, \T{zip}, \T{city}, and
+%                         \T{country} keywords; it is printed in a bold
+%                         script size sans serif font and is is separated from
+%                         the addressee's address with a rule. The country will
+%                         only be printed if the \T{foreign} keyword has been used.\NN
+% \T{returnaddress = ...}& The return address, if it is composed as just
+%                         described, may become too long to fit in the address
+%                         window. Or you may want to define a completely
+%                         different return address.  With the \T{returnaddress} keyword you can
+%                         redefine the return address. Use \C{}\C{} to insert
+%                         bullets.\NN
+% }
+%
+% \pagebreak
+% \OPTS{Header fields}{Under the address window, a header is printed. The
+% page is vertically divided in six columns, one each for the left and right
+% margins, and four which, in the header,
+% say: \textsl{Your letter of}, \textsl{Your reference}, \textsl{Our reference},
+% and \textsl{Date}, each with their respective contents under them. If the
+% \T{subject} keyword is used, an extra line starting with \textsl{Subject:} will
+% appear, followed by the contents on the same line and over a width of 2.5
+% columns. If needed, extra lines will be used.}{
+% \T{bodyshift = ...}   & The header starts 98mm from the top of the paper,
+%                         but it can be shifted with the |bodyshift| option.\NN
+% \T{[no]header}        & The |noheader| option disables all header fields, the
+%                         |header| option re-enables them (|header| is the default.)\NN
+% \T{yourletter = ...}  & first field in the header: the date of the letter
+%                         this document is reaction on; empty by default.\NN
+% \T{yourref = ...}     & second field in the header: addressee's reference of the letter
+%                         this document is reaction on; empty by default.\NN
+% \T{ourref = ...}      & third field in the header: your own reference for
+%                         this document.\NN
+% \T{date = ...}        & fourth field of the header. The argument must
+%                         have the form \T{yyyymmdd} or \T{yyyy-mm-dd}; it will
+%                         be translated into a date like ``May 3, 2006'' if the
+%                         document language is English, or into its translation
+%                         in the actual language. The default value is
+%                         `Undefined date', i.e.\ the date of \C{today} is not
+%                         the default as this would make the date untraceable
+%                         from the document source only. However, you can force
+%                         the use of \C{today} by providing the string |today|
+%                         for the argument.\NN
+% \T{forcedate = ...}   & The restrictions of the |date| option can be overridden by 
+%                         using the |forcedate| option instead; you can thus enter
+%                         anything you like for the date.\NN
+% \T{subject = ...}     & subject of this document; is placed raggedright under the other
+%                         fields, over the full textwidth. Use newlines if you want to
+%			  restrict the width of the text.\NN
+% }
+%
+% \OPTS{Opening and Closing}{A letter is started with an opening -- something
+% like `Dear John', and ended with a closing -- something like
+% `Regards,\T{<newline>}Betty', perhaps with an autograph (or white space) in between.}{
+% \T{opening = ...}     & Dear John\NN
+% \T{openingcomma = ...}& by default, the opening phrase is followed by a comma, but you
+%			  can change that here.\NN
+% \T{closing = ...}     & Regards\NN
+% \T{closingcomma = ...}& by default, the closing phrase is followed by a comma, but you
+%			  can change that here.\NN
+% \T{signature = ...}   & Betty\NN
+% \T{autograph = ...}   & \begin{minipage}[t]{\hsize}
+%                         This keyword can have one of the 10 values 0--9:\\[-\baselineskip]
+%                         \begin{compactitem}
+%                         \item [0:] no autograph; the \T{signature} appears right under
+%                                 the \T{closing}. This is the default if the \T{autograph} option
+%                                 is not used (using it without a value is equivalent to 
+%                                 \T{autograph=2}).
+%                         \item [1:] generates extra whitespace between
+%                                 \T{signature} and \T{closing} for a hand-written
+%                                 autograph.  Change with the \T{closingskip} key.
+%                         \item [2--9:] inserts one of eight autograph images
+%                                 which, with the \C{autograph} command,
+%                                 may have been defined in the style file.\\\mbox{}
+%                         \end{compactitem}
+%                         \end{minipage}
+%                         \NN
+% \T{enclosures = ...}  & This keyword can be used to add a note, at the end of
+%                         the document, which starts with \textbf{Enclosure:}
+%                         followed by the value of the keyword. Multiple
+%                         enclosures can be separated with \C{}\C{} commands. If
+%                         those are found, the starting text will be
+%                         \textbf{Enclosures:}.\NN
+% \T{closingskip = ...} & white space between signature and closing. The
+%                         default is \T{2}\C{baselineskip}.\NN
+% }
+%
+% \OPTS{Footer fields}{Footer fields are shown in the order in which
+% they appear below; they are empty by default, and empty
+% fields are not displayed.}{
+% \T{[no]footer}        & enables or disables printing a page footer; there is room
+%                         for upto four fields, if you set five fields, the last
+%                         one will appear in the right margin.\NN
+% \T{phoneprefix}       & prefix for phone numbers. The default is `0'; will be changed
+%                         into `+$<$areacode$>$-' if the \T{foreign} option is used.\NN
+% \T{phone = ...}       & if not empty, prints `phone' in the first field of the
+%                         page footer, with the contents under it, prefixed with a~0 or,
+%                         if the \T{foreign} option was used, the areacode (set with the
+%                         \T{areacode} option.) Telephone numbers should thus be entered
+%                         without a prefix.\NN
+% \T{cellphone = ...}   & same for cellphone...\NN
+% \T{fax = ...}         & fax...\NN
+% \T{email = ...}       & email...\NN
+% \T{website = ...}     & and website.\NN
+% }
+%
+% \OPTS{Folding marks}{Folding marks can be useful, particularly if your address
+% window is used to its limits. Correctly folding your letter then prevents
+% parts of the address to become invisible because of the letter loosely filling
+% the envelope.}{
+% \T{nofold}            & Disable folding marks.\NN
+% \T{foldleft}          & The folding mark is printed in the left margin.\NN
+% \T{foldright}         & The folding mark is printed in the right margin. This is the default.\NN
+% \T{fold2}             & Folding mark at about halfway, set for tight fitting
+%                         into a 220x162 mm envelope, with a tolerance of 2 mm
+%                         at both sides.\NN
+% \T{fold3}             & Folding mark at about one third from the top, set for
+%                         tight fitting into a 220x110 mm envelope, with a
+%                         tolerance of 1.5 mm at both sides.\NN
+% \T{fold = ...}        & For non-standard envelopes and paper formats the position
+%                         of the folding mark can be set at any position (in mm)
+%                         from the top of the paper.\NN
+% }
+%
+% \OPTS{Payment data}{In invoices you probably want to make clear where you want
+% your debtor to transfer his money to. You can do so by calling
+% the \C{accountdata} command, which generates a little table containing these data.
+% The contents of this table can be defined with the following keywords:}{
+% \T{term = ...}        & Payment term in days; default is 30.\NN
+% \T{currency = ...}    & Currency; default is euro.\NN
+% \T{accountno = ...}   & Your bank account number.\NN
+% \T{routingno = ...}   & Your bank's routing number. Will not be cited if undefined.\NN
+% \T{accountname = ...} & Your bank account's ascription.
+%                         Will not be cited if undefined.\NN
+% \T{iban = ...}        & Your account's \textsc{iban}...\NN
+% \T{bic = ...}         & and \textsc{bic} code; \textsc{iban} and \textsc{bic}
+%                         are only reported in invoices to foreign
+%                         customers---see the \T{foreign} keyword.\NN
+% \T{vatno = ...}       & Your \textsc{vat} reference number, not yet used.\NN
+% \T{chamber = ...}     & Your Chamber of Commerce subscription number, not yet
+%                         used.\NN
+% }
+%
+% \OPTS{Accept data}{These keys pertain to data needed for accept forms:}{
+% \T{acceptaccount = ...}     & Payer's bank account number\NN
+% \T{acceptaddress = ...}     & Payer's address lines, separated with \C{}\C{}\NN
+% \T{accepteuros = ...}       & Euro part of the amount to be paid\NN
+% \T{acceptcents = ...}       & Cents part of the amount to be paid\NN
+% \T{acceptdescription = ...} & Description to be quoted on the accept form\NN
+% \T{acceptdesc = ...}        & Short version of the description for the
+%                               detachable strip of the form to be kept by the payer\NN
+% \T{acceptreference = ...}   & Reference\NN
+% }
+%
+% \OPTS{Miscellaneous}{}{
+% \T{[no]fill}          & Use the \T{fill} keyword to justify text both left and
+%                         right; the default is \T{nofill}: left justification
+%                         only.\NN
+% \T{shift = ...}       & The many textpositions in isodoc are defined in millimeters, 
+%                         but sometimes printers show an aberration in their horizontal
+%                         or vertical printing position. You can correct for this with the
+%                         \T{shift = x,y} option, where x and y (both 0 by default) shift
+%                         the output to the right and down, respectively, in millimeters.\NN
+% }
+%
+% \section{Commands}
+% \DescribeMacro{\showkeys}
+% The \C{showkeys} command can be useful for debugging. It prints a table
+% showing the option keys described in the previous section, and their current values.
+%
+% \DescribeMacro{\setupdocument}
+% Most of the setup, both in the style files and in the documents
+% themselves, is done setting options in a call to the class-defined
+% |\setupdocument| command. The options can be either a key/value pair, or just
+% a key.
+% Options with values and those without may occur in any order, with
+% the exception of |addresscenter| (see there.)
+% Values need
+% their surrounding \{\}'s only if they contain any comma's.
+% The \textsl{Options} section explains the available options.
+%
+% Most of the options have a corresponding command with the same name.
+% Although not very often, it may sometimes be useful to have those
+% commands available. These are the options with a corresponding
+% command:\footnote{Note for developers: the table lines below can be
+% generated with a ruby script listkeys (included in the distribution):
+% |listkeys show|}
+%
+% \noindent\begin{tabular}{@{}lllll@{}}
+% accept            &addresswidth &currency     &ourref        &website    \NN
+% acceptaccount     &areacode     &email        &phone         &who        \NN
+% acceptaddress     &autograph    &enclosures   &phoneprefix   &yourletter \NN
+% acceptcents       &bic          &fax          &returnaddress &yourref    \NN
+% acceptdesc        &cellphone                  &rightaddress  &zip        \NN
+% acceptdescription &chamber      &forcedate    &routingno     &           \NN
+% accepteuros       &city         &iban         &signature     &           \NN
+% acceptreference   &closing      &leftaddress  &street        &           \NN
+% accountname       &company      &logoaddress  &subject       &           \NN
+% accountno         &country      &opening      &term          &           \NN
+% addresscenter     &countrycode  &openingcomma &vatno         &           \NN
+% \end{tabular}
+%
+% \noindent So you could write in your letter: ``please send me the money on my bank
+% account: |\accountno\| as soon as possible.''
+%
+% \DescribeMacro{\letter}
+% The |\letter| command produces one letter and can be called multiple times. It
+% has two arguments. The first argument is optional and must be a list of
+% \textsl{key=value} pairs. The options set here are usually those that vary among
+% different letters. The second argument contains the letter's content. This
+% content will, depending on the options set, automatically be surrounded by an
+% opening, a closing, an autograph, a signature and a remark about any
+% enclosures. The first page of each letter will be decorated with a logo,
+% the addressee's address, a return address,
+% various reference fields, a footer, a folding mark---all as defined by
+% \textsl{key=value} pairs in |\setupdocument| or in the |\letter| command itself.
+%
+% The second an following pages will have a heading, quoting the name of the
+% addressee and a page number. Examples of letters can be found in the
+% section \textsl{Usage: letters}.
+%
+% \DescribeMacro{\invoice}
+% The |\invoice| command is essentially the same as the |\letter| command, except
+% that the opening is always ``\textbf{\textsc{invoice}}'', and the content
+% (argument 2) is largely composed using the |\itable|, |\iitem|, |\itotal|, and
+% |\accountdata| commands described hereafter. Closing, autograph, and signature
+% are disabled.
+%
+% In the Netherlands, invoices can be provided with an accept form on the lower
+% third part of the page.  If the |accept| option was used, this accept form
+% will be filled with the available data, in the |ocrb| font where needed.
+%
+% The following commands pertain to invoices:
+% \DescribeMacro{\itable}
+% The |\itable| command uses |tabularx| to create a two-column table. The
+% first column of the table will have the header `Description' (or its
+% equivalent in the language selected), the header of the second column says
+% `Amount (EUR)'. The single argument of |\itable| should contain the
+% contents of the table and is of the form:
+% \begin{verbatim}
+%     item 1 & amount 1\NN
+%     item 2 & amount 2\NN
+%     ...
+%     item n & amount n \NN
+%     \cmidrule[.05em]{2-2}
+%     Total  & amount \NN
+% \end{verbatim}
+% However, the next two commands may be used to enter these data more cleanly:
+%
+% \DescribeMacro{\iitem}
+% The |\iitem{item}{amount}| command (|iitem| stands for Invoice Item) is
+% equivalent to writing |item & amount\NN|.
+%
+% \DescribeMacro{\itotal}
+% The |\itotal{amount}| command (|itotal| stands for Invoice total) is
+% equivalent to writing:
+% |\cmidrule[.05em]{2-2} Total & amount \NN|, with the additional
+% advantage that the word `Total' will be replaced with its equivalent
+% in the current language. Thus, the argument to the |\itable|
+% command show above can also be written:
+% \begin{verbatim}
+%     \iitem{item 1}{amount 1}
+%     \iitem{item 2}{amount 2}
+%     ...
+%     \iitem{item n}{amount n}
+%     \total{amount}
+% \end{verbatim}
+% \DescribeMacro{\accountdata}
+% The |\accountdata| command prints a little table with accounting information
+% needed by the creditor for paying the invoice. It is constructed using the
+% values of the options |accountno|, |accountname|, |routingno|, |iban|, and
+% |bic|. The latter two are only included if the |foreign| option was used.
+%
+% \DescribeMacro{\autograph}
+% The \C{autograph} command, which will normally appear in a style file,
+% serves to define up to eight autographs based
+% on \textsc{pdf}, \textsc{jpeg} or \textsc{png} images. One of these
+% autographs will be drawn between the closing (\textsl{Best regards})
+% and the signature (\textsl{Betty}) if you use the \T{autograph} option
+% with a value from 2 through 9. \C{autograph} has 7 arguments:
+%
+% \begin{tabularx}{\hsize}{@{}rX@{}}
+% arg 1:&2,3,...9: autograph number; will be translated internally to define
+%        |\autographA|, |\autographB|... |\autographH|\NN
+%     2:&scaling factor for the image\NN
+%     3:&distance the autograph outdents in the margin\NN
+%     4:&vertical position of the baseline of the closing
+%        (\textsl{Regards,}) from the top\NN
+%     5:&vertical position of the baseline of the signature (\textsl{John
+%        Letterwriter}) from the top\NN
+%     6:&height of the image\NN
+%     7:&the image (jpg, png, pdf...)\NN
+% \end{tabularx}
+%
+% The arguments 3--6 must be dimensions, and for a given autograph image should
+% be inferred by inspecting the image with an image manipulation program
+% like, for example, the gimp. In the lower left corner of the gimp window,
+% select the units of length, move the pointer to the positions where you want
+% margin, closing, and signature and to the bottom of the image, read the x, y,
+% y and y positions respectively and use those for the argument 3, 4, 5, and 6.
+%
+% \FIG{letter}{letter1}{Minimal letter example}
+%
+% \DescribeMacro{\logo}
+% The |\logo| command is internally used to define the default logo; you can
+% redefine it with |\renewcommand{\logo}{...}|. An example of logo redefinition
+% can be found on page~\pageref{logoredef}.
+%
+% \DescribeMacro{\EUROSymbol}
+% \DescribeMacro{\EuroSymbol}
+% \DescribeMacro{\EUR}
+% \DescribeMacro{\EmailSymbol}
+% \DescribeMacro{\LetterSymbol}
+% \DescribeMacro{\MobileSymbol}
+% \DescribeMacro{\PhoneSymbol}
+% Several symbols are frequently used in letters and invoices. These are
+% usually taken from marvosym.sty; however, marvosym collides frequently
+% with command names used in isodoc. So they have gotten their own names here:
+% \bigskip\\
+% \begin{tabular}{rrr}\FL
+% command & ascii& result \ML
+% |\LetterSymbol| &  66 & \LetterSymbol\NN
+%   |\EuroSymbol| & 164 & \EuroSymbol\NN
+%   |\EuroSymbol| & 164 & \EuroSymbol\NN
+%          |\EUR| &  99 & \EUROSymbol\NN
+%  |\EmailSymbol| & 107 & \EmailSymbol\NN
+%  |\PhoneSymbol| &  84 & \PhoneSymbol\NN
+% |\MobileSymbol| &  72 & \MobileSymbol\LL
+% \end{tabular}
+% \bigskip\\
+% If you need other symbols, then please email me. 
+%
+% \section{Usage: letters}
+%
+% Usage of the class is best explained by example.
+% \subsection{A simple letter}
+% Here is the latex source for a small letter; its result appears in figure~\ref{letter1}:
+% \verbinput{letter.txt}
+% This source essentially shows three items:
+% \begin{compactenum}
+% \item the inclusion of a package |mystyle|; we'll come to that shortly.
+% \item the command |\setupdocument| called with many \textsl{key=value} arguments, each
+% defining one of the texts that go into the letter.
+% \item the command |\letter|, enclosing the body of the letter;
+% just to give the letter some real body, a small text has
+% been included using |\input|.
+% \end{compactenum}
+% Of course this is not all of the information needed to create a
+% letter. For example, there should be a logo, telling the addressee who I am
+% and there should be contact information such as my address, telephone number
+% and so on. This is where the included |mystyle| package plays its part. Here
+% is an example of such a style file:
+% \verbinput{mystyle.txt}
+% So in the style file, too, |\setupdocument| is used to register
+% information that will common to almost all of my letters. The
+% |\autograph| command sets up an autograph, based on an image file. Apart
+% from the code shown here, a style file can contain definitions for more
+% autographs, and a definition for a logo. Without the latter, a default logo is
+% produced. Note also that I have included defaults for |opening|, |closing|,
+% and |signature| in the style file, and that I did not override those in the
+% letter's source.
+%
+% \FIG{logo1}{logo1}{Long letter example with a non-standard logo, page 1}
+% \FIG{logo2}{logo2}{Long letter example with a non-standard logo, page 2}
+%
+% The letter source example shown above, in combination with this style example,
+% compiles to the letter shown in figure~\ref{letter1}.
+% This example illustrates some aspects of isodoc:
+% \begin{compactitem}
+% \item At the top, you see the default letterhead (logo).  You can create your
+% own logo by redefining the |\logo| command.
+% \item Under it is the address. It has a return address in script sized sans
+% serif boldface over
+% it, because the |return| key has been used. A return address is useful if you
+% send your letters in a standard window envelope. The positioning of the
+% address is done in the style file, using the |addresscenter| and |leftaddress| or
+% |rightaddress| keywords.
+% \item The paper is vertically divided in six equally wide columns. The outer
+% two columns are the left and right margins, the second to fifth columns contain
+% header and footer fields.
+% \item The ``Your reference'' and ``Our reference'' fields have not been set
+% (with the |yourref| and |ourref| keys) and therefore stay empty by default,
+% the date field has also not been set, but it should be. Therefore, the default
+% value is ``Undefined date'', and a warning is issued by a pink background.
+% \item A folding mark has been printed in the extreme right margin, such that
+% on folding the paper along it, it will correctly fit in a 220 x 110 mm
+% envelope; this has been achieved by using the |fold3| key.
+% \item In between closing (\textsl{Best regards,}) and signature
+% (\textsl{W.H.~Dekker}) an autograph has been placed. This was done by setting
+% |autograph=2|. Alternative values are |0| (nothing between closing and
+% signature), |1| for white space where an autograph can be placed with a pen
+% after printing, or one of the values |2-9|, which may have been associated
+% with other autograph images. In this case, I have used an autograph image in
+% which I have drawn the boundary box and the \textsl{outdent},
+% \textsl{closing}, and \textsl{signature} positions defined in the
+% |\autograph| command (see the section \textsl{Commands}) with red lines.
+% \item The bottom of the letter has (up to) four fields with contact
+% information. This is useful if your logo does not show that information. If it
+% does, you can omit these fields by using the |nofooter| key, or by not
+% using the |footer| key, depending on the default set in the style file.
+% \end{compactitem}
+%
+% \subsection{Multiple letters, redefined logo}
+% Let's try another illustrative example, see figures~\ref{logo1}
+% and~\ref{logo2}: we use a modified style file, with a
+% redefined logo, so we don't need a page footer; we use preprinted right-windowed
+% envelopes, so a return address is not needed. Here is the style file
+% (|logostyle.sty|):
+% \verbinput{logostyle.txt}
+% \label{logoredef}
+% \FIG{invoice}{invoice}{Invoice example}
+% The letter source does not use the |autograph| key, so the default value of
+% |2| is used; we write it in Dutch and use
+% a larger text, just to see what happens if more than one page is generated:
+% \verbinput{logoletter.txt}
+% In this case, the same letter had to be sent to two different people,
+% with different openings and addresses of course. So the letter's body
+% is separately defined and the |\letter| command is called twice, with
+% the same body, but different |to| and |opening| keys.
+% Figures~\ref{logo1} and~\ref{logo2} show the first two pages (the
+% first letter) of this document, which actually has four pages.
+%
+% \section{Usage: invoices}
+% \subsection{A simple invoice}
+% \FIG{accept}{accept}{Invoice example with accept form}
+%
+% Invoices (can) have the same structure as letters, except that the |\opening|
+% isn't ``Dear Somebody'' anymore, but something like ``Invoice''. And the
+% |\closing| doesn't say ``Best regards'', but may provide payment information.
+% And the body is not a simple text, but a table with descriptions of things to
+% be paid, and the corresponding amounts of money.
+%
+% An example, as usual, is most instructive:
+% \verbinput{invoice.txt}
+% The result is shown in figure~\ref{invoice}.
+%
+% \subsection{Invoice with redefined logo}
+% When the |accept| option is used, the invoice will be created with an invoice
+% form on the lower third part of the page. Here is an example:
+% \verbinput{accept.txt}
+% Normally such invoices are printed on preprinted paper with an easily
+% detachable, perforated form. In this example, the form itself has been
+% printed, too. The |graphicx| and |textpos| packages have already been made
+% available by the |isodoc| class. Figure~\ref{accept} shows the output of this
+% example.
+%% \StopEventually{}
+%
+% \section{Implementation}
+% The basis is the |article| class with all options:
+%
+%    \begin{macrocode}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+\ProcessOptions
+\LoadClass{article}
+%    \end{macrocode}
+% We use |\ctable| floats here, and we need |ctable|'s commands for decent
+% spacing in tables and more. |ctable| also brings us |array|, |tabularx|,
+% |color|, and |xkeyval|. |eurosym| is used for the euro symbol.
+%    \begin{macrocode}
+\RequirePackage{ctable,eurosym,graphicx,stringstrings,calc}
+\RequirePackage{forarray}
+%    \end{macrocode}
+%
+% Since the name of the package contains 'iso', make the page A4.
+% For textpos, divide the page in 210 columns of 1mm each
+% and 297 rows, 1mm each. The page is vertically divided in 6 columns of
+% 35mm each: a left margin, 4 fields, and a right margin.
+%
+%    \begin{macrocode}
+\RequirePackage[nofoot,head=\baselineskip]{geometry}
+\RequirePackage[absolute,overlay]{textpos}
+\geometry{papersize={210mm,297mm},margin=35mm}
+\TPGrid{210}{297}
+%    \end{macrocode}
+% Several colors can be changed, by using the |\definecolor| command;
+% the defaults (all black) are set here:\\
+% \DescribeMacro{headcolor}
+%   \texttt{headcolor:} color for the header and footer field texts\\
+% \DescribeMacro{headingcolor}
+%   \texttt{headingcolor:} color for the fancy headings\\
+% \DescribeMacro{markercolor}
+%   \texttt{markercolor:} color for the folding marks
+%    \begin{macrocode}
+\definecolor{headcolor}{gray}{0}
+\definecolor{headingcolor}{gray}{0}
+\definecolor{markercolor}{gray}{0}
+%    \end{macrocode}
+%
+% Use fancy headings, except for the first page.
+% The heading, on a rule, looks like:\\[2ex]
+% To: John Doe (April 1st, 2006)\hfill Page 2 of 3\\[2ex]
+%    \begin{macrocode}
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\AtBeginDocument{\addtolength{\headheight}{\baselineskip}}
+%    \end{macrocode}
+% The |\xxxdoc| commands (like |\dutchdoc|) set the default language via
+% |\AtBeginDocument|, but other language changes should be done without that. 
+% So we must have a boolean to check if we are in the preamble:
+%
+%    \begin{macrocode}
+\newif\ifpreamble\preambletrue
+\AtBeginDocument{\preamblefalse}
+%    \end{macrocode}
+% Background color for signaling items that should have been defined, but
+% weren't:
+%    \begin{macrocode}
+\definecolor{isodocpink}{rgb}{1,.7,.7}
+\def\Undefined#1{\colorbox{isodocpink}{Undefined #1}}
+%    \end{macrocode}
+% A small sans serif font is used for header and footer field names and the
+% sender's address information. The idea is that this is used for all
+% pre-printed text on the letter paper.
+%    \begin{macrocode}
+\def\@hft{\footnotesize\sffamily\color{headcolor}}
+%    \end{macrocode}
+% \subsection{The options and their defaults}
+% \subsubsection{General options}
+% The default shift is 0mm,0mm.
+% \DescribeMacro{shift}
+% The |shift| option moves the output to the right and down:
+%    \begin{macrocode}
+\def\@xyshift#1,#2@@@{\def\@xshift{#1}\def\@yshift{#2}}
+\define@key{isodoc}{shift}{%
+  \@xyshift#1@@@
+  \AtBeginDocument{\textblockorigin{\@xshift mm}{\@yshift mm}}
+}
+%    \end{macrocode}
+% Several items in the letter/invoice will be different in documents that are to
+% be sent abroad; this is set with the |foreign| option, false by default:
+% \DescribeMacro{foreign}
+%    \begin{macrocode}
+\define@key{isodoc}{foreign}[\foreigntrue]{\foreigntrue}
+                                           \newif\ifforeign\foreignfalse
+%    \end{macrocode}
+% \DescribeMacro{cityzip}
+% By default, the zip code is typeset before the city.
+% The |cityzip| option reverses this:
+%    \begin{macrocode}
+\define@key{isodoc}{cityzip}[\cityziptrue]{\cityziptrue}
+                                           \newif\ifcityzip\cityzipfalse
+%    \end{macrocode}
+% \DescribeMacro{localbank}
+% When the |foreign| option is used, \textsc{iban} and \textsc{bic} codes are
+% reported, but this can be suppressed with the |localbank| option: 
+%    \begin{macrocode}
+\define@key{isodoc}{localbank}[\localbanktrue]{\localbanktrue}
+                                           \newif\iflocalbank\localbankfalse
+%    \end{macrocode}
+% \DescribeMacro{dutch}
+% \DescribeMacro{english}
+% \DescribeMacro{german}
+% \DescribeMacro{american}
+% \DescribeMacro{french}
+% \DescribeMacro{language}
+% The following keys set the language; English, set at the |\EndOfClass| is the
+% default.
+%    \begin{macrocode}
+\define@key{isodoc}{dutch}   []{\isodoc@dutch}
+\define@key{isodoc}{english} []{\isodoc@UKenglish}
+\define@key{isodoc}{german}  []{\isodoc@german}
+\define@key{isodoc}{american}[]{\isodoc@USenglish}
+\define@key{isodoc}{french}  []{\isodoc@french}
+\define@key{isodoc}{language}{\csname isodoc@#1\endcsname}
+%    \end{macrocode}
+% \DescribeMacro{fill}
+% \DescribeMacro{nofill}
+% The default is to have left, but not right justification, allowing for hyphenation
+% in extreme cases:
+%    \begin{macrocode}
+\define@key{isodoc}{fill}  []{\rightskip=1\rightskip}
+\define@key{isodoc}{nofill}[]{\rightskip=0mm plus 35mm}
+                              \rightskip=0mm plus 35mm
+%    \end{macrocode}
+% \subsubsection{Logo}
+% \DescribeMacro{company}
+% \DescribeMacro{logoaddress}
+% \DescribeMacro{who}
+% \DescribeMacro{street}
+% \DescribeMacro{city}
+% \DescribeMacro{zip}
+% \DescribeMacro{country}
+% \DescribeMacro{countrycode}
+% The logo, by default, consists of a large company or personal name on top a
+% rule, with a contact person's name (probably your own name) and address
+% hanging under the rule. 
+% Its contents are defined by the following options:
+%    \begin{macrocode}
+\define@key{isodoc}{company}    {\def\company{#1}}
+                                 \def\company{\Undefined{company}}
+\define@key{isodoc}{logoaddress}{\def\logoaddress{#1}}
+\define@key{isodoc}{who}        {\def\who{#1}}
+                                 \def\who{\Undefined{who}}
+\define@key{isodoc}{street}     {\def\street{#1}}
+                                 \def\street{\Undefined{street}}
+\define@key{isodoc}{city}       {\def\city{#1}}
+                                 \def\city{\Undefined{city}}
+\define@key{isodoc}{country}    {\def\country{#1}}
+                                 \def\country{\Undefined{country}}
+\define@key{isodoc}{countrycode}{\def\countrycode{#1}}
+                                 \def\countrycode{\Undefined{countrycode}}
+\define@key{isodoc}{zip}        {\def\zip{#1}}
+                                 \def\zip{\Undefined{zip}}
+\def\prezip{\ifforeign\countrycode\else\fi}
+%    \end{macrocode}
+% \subsubsection{Address window}
+% \DescribeMacro{leftaddress}
+% \DescribeMacro{rightaddress}
+% \DescribeMacro{addresscenter}
+% \DescribeMacro{addresswidth}
+% The address can be positioned vertically with the |addresscenter| option; the
+% default is 63.5mm. This is the vertical position of the center of the address.
+% Horizontally, the address is positioned either left or right, depending on the
+% |leftaddress| or |rightaddress| options being used. In the first case, the
+% address start at x=35mm, which is the left margin (the default), and thus in
+% line with the first header field, in the second case at 105mm, in line with
+% the one-but-last header field.
+%    \begin{macrocode}
+\define@key{isodoc}{leftaddress} []{\def\xaddress{35}}
+                                    \def\xaddress{35}
+\define@key{isodoc}{rightaddress}[]{\def\xaddress{105}}
+\define@key{isodoc}{addresscenter} {\def\addresscenter{#1}}
+                                    \def\addresscenter{63.5}
+\define@key{isodoc}{addresswidth}  {\def\addresswidth{#1}}
+                                    \def\addresswidth{70}
+%    \end{macrocode}
+% \DescribeMacro{to}
+% The |to| option takes the addressee's address lines. Use |\\| to
+% separate lines. The info will be split by |\processto| on the first
+% |\\| separator into the addressee's name (|\toname|) and his address
+% (|\toaddress|)
+% The |\toname| will be reported in the pdf's document properties.
+% However, this works only if the |to| key is set, with |\setupdocument|, in the
+% preamble. If several letters are composed, |to| is normally set in the
+% |\letter| or |\invoice| commands and thus is not seen by the |\hypersetup|,
+% which is called |\AtBeginDocument|; so set the defaults to
+% |Various people| for the |\toname| and make the address undefined:
+%    \begin{macrocode}
+\define@key{isodoc}{to}{\processto{#1}}\def\toname{Various people}
+                                       \def\toaddress{\Undefined{to}}
+\long\def\processto#1{\xproc #1\\@@@\ifx\toaddress\empty
+    \else \yproc #1@@@\fi}
+\long\def\xproc #1\\#2@@@{\def\toname{#1}\def\toaddress{#2}}
+\long\def\yproc #1\\#2@@@{\def\toaddress{#2}}
+%    \end{macrocode}
+% \DescribeMacro{return}
+% \DescribeMacro{noreturn}
+% \DescribeMacro{returnaddress}
+% The default is to have no return address; but this can be changed by using
+% the |return| (either in the style file or in the source) or, if the default
+% was changed in the style file, remove it with |noreturn| in the source.
+% Company and country names are often too long to fit in the address window. Or
+% you may want to define an entirely different return address. The
+% |returnaddress| option is provided to redefine the return address:
+%    \begin{macrocode}
+\define@key{isodoc}{return}     []{\returntrue}
+                    \newif\ifreturn\returnfalse
+\define@key{isodoc}{noreturn}   []{\returnfalse}
+\define@key{isodoc}{returnaddress}{\def\returnaddress{#1}}
+%    \end{macrocode}
+%
+% \subsubsection{Header}
+% \DescribeMacro{header}
+% \DescribeMacro{noheader}
+% A header is switched on or off with the |header| and |noheader| options.
+% The default is to have a header.
+%    \begin{macrocode}
+\define@key{isodoc}{header}  []{\headertrue}
+                 \newif\ifheader\headertrue
+\define@key{isodoc}{noheader}[]{\headerfalse}
+%    \end{macrocode}
+% \DescribeMacro{bodyshift}
+% The header is the start of the body. It is initially positioned
+% at 98mm from the top of the paper, but it can be shifted with
+% the |bodyshift| option.
+%    \begin{macrocode}
+\define@key{isodoc}{bodyshift} {\advance\headerpos#1}
+\newcount\headerpos\headerpos=98
+\newcount\footerpos\footerpos=275
+\newcount\subjectpos
+\newcount\openingpos
+\newcount\textskip
+%    \end{macrocode}
+%
+% \subsubsection{Footer}
+% \DescribeMacro{footer}
+% \DescribeMacro{nofooter}
+% A footer is switched on or off with the |footer| and |nofooter| options.
+% The default is the have no footer.
+%    \begin{macrocode}
+\define@key{isodoc}{footer}  []{\footertrue}
+                 \newif\iffooter\footerfalse
+\define@key{isodoc}{nofooter}[]{\footerfalse}
+%    \end{macrocode}
+% If there \textsl{is} a page footer, only those fields will be displayed which are not empty.
+% \DescribeMacro{areacode}   
+% \DescribeMacro{phone}      
+% \DescribeMacro{phoneprefix} 
+% \DescribeMacro{cellphone}  
+% \DescribeMacro{fax}        
+% \DescribeMacro{website}    
+% \DescribeMacro{email}      
+% Currently the |phone|, |cellphone|, |fax|, |email| and |website| are
+% recognised as possible footer fields. Phone and fax number will be prefixed
+% with a 0, unless the |foreign| option was used: then the prefix will be
+% `+nn-', where nn is the areacode. The latter is set with the |areacode|
+% option, which is `Undefined areacode' by default.
+%    \begin{macrocode}
+\define@key{isodoc}{areacode}   {\def\areacode{#1}}
+                                 \def\areacode{\Undefined{areacode}}
+\define@key{isodoc}{phone}      {\def\phone{#1}}
+                                 \def\phone{}
+\define@key{isodoc}{phoneprefix}{\def\phoneprefix{#1}}
+                                 \def\phoneprefix{0}
+\define@key{isodoc}{cellphone}  {\def\cellphone{#1}}
+                                 \def\cellphone{}
+\define@key{isodoc}{fax}        {\def\fax{#1}}
+                                 \def\fax{}
+\define@key{isodoc}{website}    {\def\website{#1}}
+                                 \def\website{}
+\define@key{isodoc}{email}      {\def\email{#1}}
+                                 \def\email{}
+\def\lead{\ifforeign+\areacode-\else\phoneprefix\fi}
+%    \end{macrocode}
+% \subsubsection{Folding mark}
+% \DescribeMacro{nofold}
+% The default is to have no folding mark. So start with the folding mark
+% position outside the paper boundaries:
+%    \begin{macrocode}
+\define@key{isodoc}{nofold}[]{\yfold=-1mm}
+               \newdimen\yfold\yfold=-1mm
+%    \end{macrocode}
+% \DescribeMacro{foldleft}
+% \DescribeMacro{foldright}
+% The folding mark is in the right margin, but it can be moved to the left
+% margin with the |foldleft| option, or, if made that the default in your style
+% file, back to the right margin with the |foldright| option:
+%    \begin{macrocode}
+\define@key{isodoc}{foldleft}[]{\xfold=9mm}
+               \newdimen\xfold\xfold=201mm
+\define@key{isodoc}{foldright}[]{\xfold=201mm}
+%    \end{macrocode}
+% \DescribeMacro{fold2}
+% The envelope for double folded A4 is C5: 162x220mm,
+% window 40x110mm, upper left corner at 20x50mm.
+% Fold the A4 to have a tolerance of 2mm at top and bottom, by
+% putting the fold mark at 162-4=158 mm.
+%    \begin{macrocode}
+\define@key{isodoc}{fold2}[]{\yfold=158mm}
+%    \end{macrocode}
+% \DescribeMacro{fold3}
+% The envelope for triple folded A4 is DL: 110x220mm,
+% Fold the A4 to have a tolerance of 1.5mm at top and bottom, by
+% putting the fold mark at 110-3=107mm.
+%    \begin{macrocode}
+\define@key{isodoc}{fold3}[]{\yfold=107mm}
+%    \end{macrocode}
+% \DescribeMacro{fold}
+% For non-standard envelopes and paper formats the position of the
+% folding mark can be set at any position (in mm) from the top of the paper:
+%    \begin{macrocode}
+\define@key{isodoc}{fold}{\yfold=#1mm}
+%    \end{macrocode}
+%
+% \subsubsection{Header fields}
+% There are four header fields, each one quarter of the textwidth wide.
+% Under those, if the subject has been defined, a subject line.
+% The header position is 98mm by default, but it can be shifted with the |bodyshift| option.
+% \DescribeMacro{ourref}
+% \DescribeMacro{yourref}
+% \DescribeMacro{yourletter}
+%    \begin{macrocode}
+\define@key{isodoc}{ourref}  {\def\ourref{#1}}
+                              \def\ourref{}
+\define@key{isodoc}{yourref}   {\def\yourref{#1}}
+                              \def\yourref{}
+\define@key{isodoc}{yourletter}{\def\yourletter{#1}}
+                              \def\yourletter{}
+%    \end{macrocode}
+% \DescribeMacro{date}
+% The date must be entered in either of three formats: yyyy-mm-dd, yyyymmdd
+% or the string |today|. Here we check that a correct format is offered and
+% that the values for |mm| and |dd| are in the range 1--12 and 1--31 respectively.
+% The string |today| sets the date to today's date.
+%    \begin{macrocode}
+\define@key{isodoc}{date}{\@isomakedate{#1}}
+                          \def\date{\Undefined{date}}
+%    \end{macrocode}
+% \DescribeMacro{forcedate}
+% If you know what you do you can substitute anything you like for the date by 
+% using the |forcedate| option instead of |date|:
+%    \begin{macrocode}
+\define@key{isodoc}{forcedate}{\def\forcedate{#1}}\def\forcedate{}
+%    \end{macrocode}
+% \DescribeMacro{subject}
+% The subject is empty by default and will be typeset only if you give it a value.
+%    \begin{macrocode}
+\define@key{isodoc}{subject}{\def\subject{#1}}
+                             \def\subject{}
+%    \end{macrocode}
+% \DescribeMacro{opening}
+% \DescribeMacro{openingcomma}
+% The opening, something like `Dear Reader', is set by the |opening| option; the
+% default is `Undefined opening'. It is followed by a comma, unless the
+% |openingcomma| has been used to set it to a different character, like a
+% semicolon or an exclamation mark.
+%    \begin{macrocode}
+\define@key{isodoc}{opening}     {\def\opening{#1}}
+                                  \def\openingcomma{,}
+\define@key{isodoc}{openingcomma}{\def\openingcomma{#1}}
+                                  \def\opening{\Undefined{opening}}
+%    \end{macrocode}
+% \subsubsection{Closing, autograph, signature}
+% \DescribeMacro{closing}
+% \DescribeMacro{closingskip}
+% The closing, something like `Best regards', is set by the |closing| option;
+% the default is `Undefined closing'. It will be preceded by a vertical skip,
+% which can be set by the |closingskip| option, which is |2\baselineskip| by
+% default:
+%    \begin{macrocode}
+\define@key{isodoc}{closing}    {\def\closing{#1}}
+				 \def\closingcomma{,}
+                                 \def\closing{\Undefined{closing}}
+\define@key{isodoc}{closingskip}{\closingskip=#1}
+            \newdimen\closingskip\closingskip=2\baselineskip
+%    \end{macrocode}
+% \DescribeMacro{autograph}
+% The autograph is either just a newline, or a vertical spacing where you can
+% put your autograph manually, or a graphic. In the latter case, is must have
+% been defined with the macro |\autograph|, which defines an autograph from an
+% image, see the section \textsl{User Macros}.
+% Not using the |autograph| option is equivalent to |autograph=0| (just a newline).
+% Using it without a value is equivalent to |autograph=2| (image inserted):
+%    \begin{macrocode}
+\define@key{isodoc}{autograph}[2]{\def\autographversion{#1}}
+                                  \def\autographversion{0}
+%    \end{macrocode}
+% \DescribeMacro{signature}
+% The signature, something like `John Letterwriter', is set by the |signature| option;
+% the default is `Undefined signature'.
+%    \begin{macrocode}
+\define@key{isodoc}{signature}{\def\signature{#1}}
+                               \def\signature{\Undefined{signature}}
+%    \end{macrocode}
+% \DescribeMacro{enclosures}
+% Enclosures are set by the |enclosures| option. There are none by default.
+%    \begin{macrocode}
+\define@key{isodoc}{enclosures} {\def\enclosures{#1}}
+                                 \def\enclosures{}
+%    \end{macrocode}
+% \subsubsection{Invoice specific data}
+% \DescribeMacro{term}
+% \DescribeMacro{accountno}  
+% \DescribeMacro{routingno}  
+% \DescribeMacro{accountname}
+% \DescribeMacro{iban}       
+% \DescribeMacro{bic}        
+% \DescribeMacro{vatno}      
+% \DescribeMacro{chamber}    
+% \DescribeMacro{currency}   
+% Invoices need to state some specific data, like account data and term of
+% payment:
+%    \begin{macrocode}
+\define@key{isodoc}{term}   [30]{\def\term{#1}}
+\define@key{isodoc}{accountno}  {\def\accountno{#1}}
+\define@key{isodoc}{routingno}  {\def\routingno{#1}}
+\define@key{isodoc}{accountname}{\def\accountname{#1}}
+\define@key{isodoc}{iban}       {\def\iban{#1}}
+\define@key{isodoc}{bic}        {\def\bic{#1}}
+\define@key{isodoc}{vatno}      {\def\vatno{#1}}
+\define@key{isodoc}{chamber}    {\def\chamber{#1}}
+                                 \def\chamber{Undefined{chamber}}
+\define@key{isodoc}{currency}   {\def\currency{#1}}
+                                 \def\currency{\EuroSymbol}
+%    \end{macrocode}
+% \DescribeMacro{accept}
+% \DescribeMacro{acceptaccount}    
+% \DescribeMacro{acceptaddress}    
+% \DescribeMacro{acceptcents}      
+% \DescribeMacro{acceptdescription}
+% \DescribeMacro{acceptdesc}       
+% \DescribeMacro{accepteuros}      
+% \DescribeMacro{acceptreference}  
+% If an accept form is to be printed, here are the options to fill in all the
+% fields:
+%    \begin{macrocode}
+\define@key{isodoc}{accept}[E05]{\def\accepttype{#1}
+                                 \newfont\ocrb{ocrb10}
+                                }
+\define@key{isodoc}{acceptaccount}    {\def\acceptaccount{#1}}
+                                       \def\acceptaccount{}
+\define@key{isodoc}{acceptaddress}    {\def\acceptaddress{#1}}
+                                       \def\acceptaddress{}
+\define@key{isodoc}{acceptcents}      {\def\acceptcents{#1}}
+                                       \def\acceptcents{Undefined{}}
+\define@key{isodoc}{acceptdescription}{\def\acceptdescription{#1}}
+                                       \def\acceptdescription{}
+\define@key{isodoc}{acceptdesc}       {\def\acceptdesc{#1}}
+                                       \def\acceptdesc{}
+\define@key{isodoc}{accepteuros}      {\def\accepteuros{#1}}
+                                       \def\accepteuros{Undefined{}}
+\define@key{isodoc}{acceptreference}  {\def\acceptreference{#1}}
+                                       \def\acceptreference{Undefined{ref}}
+%    \end{macrocode}
+% For now, we define field positons for the E05 accept form only; when data for
+% other forms become available, the content of |\accepttype| will have to be
+% checked. Here is a rough layout of the E05 accept form -- the last character
+% tells if the items are tyepset in a Tbox (T) or in a Cbox (C):
+% 
+% \begin{verbatim}
+%                                        description       T
+% ref                                    description       T
+% ref                 euros cents             reference    C
+% 
+% eur ct                  account                          C
+% 
+% desc                address                              T
+% desc                address
+% desc                address
+% \end{verbatim}
+%    \begin{macrocode}
+\def\xacceptdescription{105}\def\yacceptdescription{200}\def\wacceptdescription{100} %T
+\def\xacceptref{7}          \def\yacceptref{212}        \def\wacceptref{30}          %T
+\def\xaccepteuros{60}       \def\yaccepteuros{216}      \def\waccepteuros{32}        %C
+\def\xacceptcents{89}       \def\yacceptcents{216}      \def\wacceptcents{13}        %C
+\def\xacceptreference{125}  \def\yacceptreference{216}  \def\wacceptreference{55}    %C
+\def\xaccepteur{14.4}       \def\yaccepteur{228.5}      \def\waccepteur{21}          %C
+\def\xacceptct{32}          \def\yacceptct{228.5}       \def\wacceptct{9}            %C
+\def\xacceptaccount{75}     \def\yacceptaccount{228.5}  \def\wacceptaccount{65}      %C
+\def\xacceptdesc{7}         \def\yacceptdesc{241}       \def\wacceptdesc{26}         %T
+\def\xacceptaddress{58}     \def\yacceptaddress{241}    \def\wacceptaddress{90}      %T
+%    \end{macrocode}
+% This is the |\baselineskip| for the two-line reference of the detachable strip:
+%    \begin{macrocode}
+\newdimen\acceptreferenceskip\acceptreferenceskip=5.15mm
+%    \end{macrocode}
+% \subsection{User Macros}
+% Some symbols taken from marvosym.sty:
+%    \begin{macrocode}
+\RequirePackage{isodocsymbols}
+%    \end{macrocode}
+% The autograph is either just a newline, or a vertical spacing where you can
+% put your autograph manually, or a graphic. In the latter case, is must have
+% been defined with the macro |\autograph|, which defines an autograph from an
+% image.\footnote{Thanks, Hans Hagen and Piet van  Oostrum, for its definition}\\
+% The arguments 3 - 6 can be found by measuring those (with the gimp, for example)
+% in the unscaled (raw) image (which is the last argument).
+% \\[1ex]
+% \begin{tabularx}{\hsize}{@{}rX@{}}
+% arg 1:&2,3,...9: autograph number; will be translated internally to define
+%        |\autographA|, |\autographB|... |\autographH|\NN
+%     2:&scaling factor for the image\NN
+%     3:&the distance the autograph outdents in the margin\NN
+%     4:&the vertical position of the baseline of the closing (Regards,) from the top\NN
+%     5:&the vertical position of the baseline of the signature (John Letterwriter) from the top\NN
+%     6:&the height of the image\NN
+%     7:&the image (jpg, png, pdf...)\NN
+% \end{tabularx}
+% \DescribeMacro{\autograph}
+%    \begin{macrocode}
+\newdimen\myoutdent
+\newdimen\signskip
+\newdimen\mydown
+\def\autograph#1#2#3#4#5#6#7{%
+  \ifnum #1<2
+    \ClassError{isodoc}{autograph #1 cannot be changed (first arg must be 2..9)}{}
+  \fi
+  \ifnum #1>9
+    \ClassError{isodoc}{autograph #1 cannot be changed (first arg must be 2..9)}{}
+  \fi
+  \bgroup
+  \lccode`2=`A \lccode`6=`E
+  \lccode`3=`B \lccode`7=`F
+  \lccode`4=`C \lccode`8=`G
+  \lccode`5=`D \lccode`9=`H
+  \lowercase{\def\temp{#1}}%
+  \expandafter\egroup\expandafter\def\csname autograph\temp\endcsname{%
+    \myoutdent=#3
+    \signskip=#5\advance\signskip-#4
+    \mydown=#6\advance\mydown-#4
+    \par\hspace*{-#2\myoutdent}%
+    \raisebox{-#2\mydown}[0bp][0bp]{\includegraphics[scale=#2]{#7}}\\[-\baselineskip]
+    \closing\\[-2\baselineskip]\\[#2\signskip]\signature%
+  }
+}
+%    \end{macrocode}
+% \subsubsection{Logo}
+% The logo, by default, consists of a large company name on top a rule,
+% with a contact person's name (probably your own name) and address
+% hanging under the rule. 
+% If the osf-txfonts package is used, oldstyle figures are disabled here.
+% \DescribeMacro{\logo}
+%    \begin{macrocode}
+\newcommand{\zippedcity}{\ifcityzip\city\ \prezip\ \zip\else\prezip\ \zip\ \city\fi}
+\newcommand{\logo}{%
+  { \parskip=0pt\parindent=0pt
+    \begin{textblock}{140}[0,1](35,20)%
+        \textsf{\LARGE\company}\\[-1.7ex] % large company name
+        \rule{\hsize}{.3pt}               % on top a rule
+    \end{textblock}
+  }
+  \Tbox{140}{22}{35}{\noindent
+     \footnotesize\sffamily
+     \ifx\undefined\logoaddress%
+       \ifx\undefined\tbfigures\else\tbfigures\fi
+       \ifx\who\empty\else\who\\\fi
+       \ifx\street\empty\else\street\\\fi
+       \zippedcity
+       \ifforeign\\\country\fi
+     \else\logoaddress\fi
+  }
+}
+%    \end{macrocode}
+% \DescribeMacro{\returnaddress}
+%    \begin{macrocode}
+\def\returnaddress{%
+  \ifx\undefined\tbfigures\else\tbfigures\fi % when using osf-txfonts... just for me
+  \company\\
+  \street\\
+  \zippedcity
+  \ifforeign\\\country\fi
+}
+%    \end{macrocode}
+% \DescribeMacro{\setupdocument}
+%    \begin{macrocode}
+\newcommand{\setupdocument}[1]{
+  \setkeys{isodoc}{#1}
+  \iffooter\else\geometry{bottom=25mm}\fi
+}
+%    \end{macrocode}
+% \DescribeMacro{\@isomakedate}
+%    \begin{macrocode}
+\newcount\@isoyear   \@isoyear=\year  \year=0
+\newcount\@isomonth \@isomonth=\month
+\newcount\@isoday     \@isoday=\day
+\def\@isomakedate#1{%
+  \def\@isoarg{#1}\def\@isotoday{today}
+  \ifx\@isoarg\@isotoday
+     \year=\@isoyear
+    \month=\@isomonth
+      \day=\@isoday
+  \else
+    \stringlength[q]{\@isoarg}
+    \ifnum\theresult=10
+      \substring[q]{\@isoarg}{5}{5}
+      \if\thestring-\else\ClassError{isodoc}{
+        Illegal date separator: \thestring (must be -)}{}\fi
+      \substring[q]{\@isoarg}{8}{8}
+      \if\thestring-\else\ClassError{isodoc}{
+        Illegal date separator: \thestring (must be -)}{}\fi
+    \else
+      \ifnum\theresult=8\else\ClassError{isodoc}{
+        Illegal date: not yyyymmdd | yyyy-mm-dd | today}{}\fi
+    \fi
+    \Treatments{0}{0}{0}{1}{0}{0}
+    \substring[q]{\@isoarg}{1}{$} \let\@isodigits=\thestring \def\@isoarg{\thestring}
+    \stringlength[q]{\@isodigits}
+    \ifnum\theresult=8\else\ClassError{isodoc}{Illegal date: must have 8 digits}{}\fi
+    \substring[q]{\@isoarg}{1}{4}  \year=\thestring \def\@isoarg{\@isodigits}
+    \substring[q]{\@isoarg}{5}{6} \month=\thestring \def\@isoarg{\@isodigits}
+    \substring[q]{\@isoarg}{7}{8}   \day=\thestring \def\@isoarg{\@isodigits}
+    \ifnum \month > 12 \ClassError{isodoc}{Illegal date: month>12}{}\fi
+    \ifnum \day   > 31 \ClassError{isodoc}{Illegal date: day>31}{}\fi
+  \fi
+}
+%    \end{macrocode}
+% \DescribeMacro{\footfield}
+% Create any non-empty footfields, starting at left arguments:
+% \begin{compactenum}
+% \item fieldlabel
+% \item a prefix for the content (for phone numbers)
+% \item the content
+% \end{compactenum}
+%    \begin{macrocode}
+\def\footfield#1#2#3{%
+  \ifx#3\empty\else
+    \Tbox{\footcount}{\footerpos}{35}{\noindent
+      {\@hft#1}\\
+        #2#3
+    }
+    \advance\footcount35
+  \fi
+}
+%    \end{macrocode}
+% \DescribeMacro{\accountdata}
+% Print a table with banking information. Show account number, account
+% name + city, and a reference. If the |foreign| key was used,
+% \textsc{iban} and \textsc{bic} codes are also reported, but can be suppressed
+% with the |localbank| option.
+%    \begin{macrocode}
+\def\accountdata{
+  \textbf{\accountdatatext:}\\
+  \begin{tabular}{@{}rl@{}}
+    \ifx\term\undefined\else
+             \termtext: & \term\ \daystext\\
+    \fi
+        \accountnotext: & \accountno\\
+    \ifx\accountname\undefined\else
+       \accountnametext: & \accountname{}\\
+    \fi
+    \ifx\routingno\undefined\else
+       \routingnotext: & \routingno{}\\
+    \fi
+        \referencetext: & \ourref\\
+    \ifforeign
+      \iflocalbank\else
+                  iban: & \scshape \iban\\
+                   bic: & \scshape \bic\\
+      \fi
+    \fi
+    \ifx\vatno\undefined\else
+      \vatnotext: & \vatno\\
+    \fi
+  \end{tabular}
+}
+%    \end{macrocode}
+% The |\showkeys| command is useful for debugging. It prints a table showing the
+% values of most keys.\footnote{Note for developers: the table lines below can
+% be generated with a ruby script listkeys (included in the distribution):
+% |listkeys defs|}
+% \DescribeMacro{\showkeys}
+%    \begin{macrocode}
+\def\showkeys{%
+  \begin{tabular}{ll}
+              accept & \accept\NN
+       acceptaccount & \acceptaccount\NN
+       acceptaddress & \acceptaddress\NN
+         acceptcents & \acceptcents\NN
+          acceptdesc & \acceptdesc\NN
+   acceptdescription & \acceptdescription\NN
+         accepteuros & \accepteuros\NN
+     acceptreference & \acceptreference\NN
+         accountname & \accountname\NN
+           accountno & \accountno\NN
+       addresscenter & \addresscenter\NN
+        addresswidth & \addresswidth\NN
+            areacode & \areacode\NN
+           autograph & \autograph\NN
+                 bic & \bic\NN
+           cellphone & \cellphone\NN
+             chamber & \chamber\NN
+                city & \city\NN
+             closing & \closing\NN
+        closingcomma & \closingcomma\NN
+             company & \company\NN
+             country & \country\NN
+         countrycode & \countrycode\NN
+            currency & \currency\NN
+               email & \email\NN
+          enclosures & \enclosures\NN
+                 fax & \fax\NN
+           forcedate & \forcedate\NN
+                iban & \iban\NN
+         leftaddress & \leftaddress\NN
+         logoaddress & \logoaddress\NN
+             opening & \opening\NN
+        openingcomma & \openingcomma\NN
+              ourref & \ourref\NN
+               phone & \phone\NN
+         phoneprefix & \phoneprefix\NN
+       returnaddress & \returnaddress\NN
+        rightaddress & \rightaddress\NN
+           routingno & \routingno\NN
+           signature & \signature\NN
+              street & \street\NN
+             subject & \subject\NN
+                term & \term\NN
+               vatno & \vatno\NN
+             website & \website\NN
+                 who & \who\NN
+          yourletter & \yourletter\NN
+             yourref & \yourref\NN
+                 zip & \zip\NN
+  \end{tabular}
+}
+\AtEndOfClass{%
+  \usepackage{hyperref}
+   \year=0
+}
+\AtEndDocument{%
+  \hypersetup{pdfauthor={\who},
+              pdfproducer={isodoc v\fileversion}
+  }
+}
+% \DescribeMacro{\itable}
+% |\itable| inserts an invoice table; arg1 should be the rows of the table.
+%    \begin{macrocode}
+\def\itable#1{
+  \begin{tabularx}{\hsize}{@{}X@{\barsep\quad\qquad}r@{}}
+    \multicolumn{2}{@{}c@{}}{\sffamily\descriptiontext\hfill
+    \amounttext (\currency)}\ML
+    #1
+  \end{tabularx}
+}
+% \DescribeMacro{\iitem}
+% |\iitem| inserts an invoice item in the |\itable|.
+% It inserts |arg1 & % arg2\NN|:
+%    \begin{macrocode}
+\def\iitem#1#2{#1&#2\NN}
+% \DescribeMacro{\itotal}
+%    \end{macrocode}
+% |\itotal| inserts an invoice total in the |\itable|.\\
+% It inserts |\cmidrule[.05em]{2-2}Total & arg1\NN|:
+%    \begin{macrocode}
+\def\itotal#1{\cmidrule[.05em]{2-2}\totaltext&\textbf{#1}\NN}
+%    \end{macrocode}
+% The counter |\lettercount| is used to construct a label on the last
+% page of each letter/invoice of this document; it wil be set to
+% \texttt{LastPageOf\textsl{n}}, where \textsl{n} is the letter
+% number: 1, 2, 3, ... This allows for page headings saying ``Page n
+% of m.'' This label is automatically added at the end of each letter.
+%    \begin{macrocode}
+\newcounter{lettercount}\setcounter{lettercount}{0}
+%    \end{macrocode}
+% \DescribeMacro{\invoice}
+% |\invoice| prints an invoice. The first argument is optional, and may
+% contain the same \textsl{key=value} statement as |\setupdocument|. This is
+% useful if the document contains more than one invoice for different
+% addressees.
+%
+% The second argument creates a two-column table with headings
+% ``Description'' and ``Amount (EuroSymbol)''. The two columns are separated
+% with a vertical rule; its construction is somewhat complicated, as the
+% booktabs/ctable packages are in use that don't provide decent vertical
+% separators. The |\barsep| macro extends these separators vertically.
+%    \begin{macrocode}
+\newif\ifclosing\closingtrue
+\newcount\footcount
+\newcommand{\invoice}[2][]{%
+  \closingfalse
+  \def\barsep{\raisebox{-1.5ex}[0pt][0pt]{\rule{.05em}{4ex}}}%
+  \letter[#1,
+    opening={\bfseries\scshape\Large\invoicetext},
+    openingcomma={},
+    closing={},
+    signature={}]{\Tbox{35}{127}{140}{\ignorespaces#2}}
+}
+%    \end{macrocode}
+% \DescribeMacro{\letter}
+% |\letter| prints a letter...
+% The code is enclosed in an extra pair of braces, in order to keep option changes local
+%    \begin{macrocode}
+\newcommand{\letter}[2][]{{%
+  \newpage
+  \setkeys{isodoc}{#1}
+%    \end{macrocode}
+% By now, a language should have been chosen; if not, issue a warning
+% and set the language to the default: UKenglish
+%    \begin{macrocode}
+  \ifx\yourlettertext\undefined\ClassWarning{isodoc}{
+    You did not use the language option; using the default: UKenglish
+  }\isodoc@UKenglish\fi
+  \ifnum\value{lettercount}=0%
+    \hypersetup{pdftitle={letter to \toname\ dated \today},
+                pdfsubject={\subject}}
+  \fi
+  \addtocounter{lettercount}{1}
+  \setcounter{page}{1}
+  \setcounter{footnote}{0}
+  \fancyhf{}
+  \if@twoside
+    \fancyhead[LE,RO]{\color{headingcolor}%
+       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+    \fancyhead[RE,LO]{\color{headingcolor}%
+       \totext: \toname\ (\date)}
+  \else
+    \fancyhead[L]{\color{headingcolor}%
+       \totext: \toname\ (\date)}
+    \fancyhead[R]{\color{headingcolor}%
+       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+  \fi
+  \logo
+%    \end{macrocode}
+% addresscenter is the center, vertically, of the to-address block:
+% xaddress should be 1 or 3 for left- and right address windows
+%    \begin{macrocode}
+  { \parskip=0pt\parindent=0pt
+    \begin{textblock}{\addresswidth}[0,.5](\xaddress,\addresscenter)%
+        \ifreturn
+          {\def\\{\unskip\enspace\textbullet\enspace\ignorespaces}%
+            \sffamily\bfseries\scriptsize\returnaddress
+          }\\[-.8\baselineskip]
+          \rule{\hsize}{.2pt}\\
+        \fi
+        \toname\\\toaddress
+    \end{textblock}
+  }
+  \subjectpos=\headerpos
+  \textskip=\headerpos\advance\textskip-12
+  \ifx\subject\empty\advance\textskip-10\else\advance\subjectpos10\fi
+  \openingpos=\subjectpos
+  \ifheader
+    \openingpos=\subjectpos\advance\openingpos12
+    \Tbox{35}{\headerpos}{35}{\noindent
+      {\@hft\yourlettertext}\\
+      \yourletter
+    }
+    \Tbox{70}{\headerpos}{35}{\noindent
+      {\@hft\yourreftext}\\
+      \raggedright\yourref
+    }
+    \Tbox{105}{\headerpos}{35}{\noindent
+      {\@hft\ourreftext}\\
+      \raggedright\ourref
+    }
+    \Tbox{140}{\headerpos}{35}{\noindent
+      {\@hft\datetext}\\
+      \ifx\forcedate\empty%
+        \ifnum\year=0\Undefined{date}\else\date\fi
+      \else\forcedate\fi
+    }
+    \ifx\subject\empty\else%
+      \Tbox{35}{\subjectpos}{140}{\noindent
+        \begin{tabularx}{\hsize}{@{}l>{\raggedright}X@{}}
+          \@hft\subjecttext&\subject
+        \end{tabularx}
+      }
+    \fi
+  \else
+    \advance\textskip-12
+  \fi
+%    \end{macrocode}
+% Create any non-empty footfields, starting at left;
+%    (===>must have to be made variable with an option footfieldorder):
+%    \begin{macrocode}
+  \footcount=35
+  \iffooter
+    \ForEachX{;}{%
+      \setbox0=\hbox{\csname\thislevelitem\endcsname}
+      \ifdim\wd0=0pt\else
+        \Tbox{\footcount}{\footerpos}{35}{\noindent
+          {\@hft\csname\thislevelitem text\endcsname}\\
+            \csname\thislevelitem\endcsname
+        }
+        \advance\footcount35
+      \fi
+    }{website;phone;cellphone;fax;email} % variabele/optie van maken
+  \fi
+  { \parskip=0pt\parindent=0pt
+    \begin{textblock*}{3mm}(\xfold,\yfold)%
+       {\color{markercolor}\rule{\hsize}{.2pt}}
+    \end{textblock*}
+  }
+  \ifx\undefined\accepttype\else\accept\fi
+  \noindent\Tbox{35}{\openingpos}{140}{\opening\openingcomma}
+  \vspace{\textskip mm}
+  \thispagestyle{empty}
+  \noindent\ignorespaces#2
+  {\parindent=0pt\parskip=\baselineskip
+    \ifclosing
+      \ifcase\autographversion
+        \par\closing\closingcomma\\\signature   % 0: closing on the next line
+      \or\par\closing\closingcomma\\[\closingskip]\signature % 1: whiteskip
+      \or\autographA
+      \or\autographB
+      \or\autographC
+      \or\autographD
+      \or\autographE
+      \or\autographF
+      \or\autographG
+      \or\autographH
+      \else
+        \par\Undefined{autograph: \autographversion}\\
+      \fi
+    \fi
+    \ifx\enclosures\empty\else
+      \vfill
+      \setbox1=\vbox{\enclosures}%
+      \textbf{\ifdim\ht1>\baselineskip\enclosurestext\else\enclosuretext\fi}%
+      \\\enclosures
+    \fi
+  }
+  \label{LastPageOf\thelettercount}
+}}
+%    \end{macrocode}
+% \subsection{Internal Macros}
+% The accept is produced from |\Tbox| and |\Cbox| commands only, using the
+% |textpos| package:
+% \DescribeMacro{\Cbox}
+% |\Cbox{x}{y}{width}{text}| places |text| in a box of |\testsl{width}| mm, centered around (|x|,|y|) in mm:
+%    \begin{macrocode}
+\def\Cbox#1#2#3#4{%
+  { \parskip=0pt\parindent=0pt
+    \begin{textblock}{#3}[.5,.5](#1,#2)%
+        \begin{center}
+          #4
+        \end{center}
+    \end{textblock}
+  }
+}
+%    \end{macrocode}
+% \DescribeMacro{\Tbox}
+% |\Tbox{x}{y}{width}{text}| places |text| in a box of |\testsl{width}| mm, with the upper left corner at (|x|,|y|) in mm:
+%    \begin{macrocode}
+\long\def\Tbox#1#2#3#4{%
+  { \parskip0pt\parindent=0pt
+    \begin{textblock}{#3}(#1,#2)%
+        \begin{minipage}[t]{\hsize}
+          \noindent#4
+        \end{minipage}
+    \end{textblock}
+  }
+}
+%    \end{macrocode}
+% \DescribeMacro{\accept}
+% This macro will have a parameter if other accept forms will have to be
+% programmed:
+%    \begin{macrocode}
+\def\accept{
+  \Tbox{\xacceptdescription}
+       {\yacceptdescription}
+       {\wacceptdescription}
+       {\acceptdescription}
+  \Tbox{\xacceptdesc}
+       {\yacceptdesc}
+       {\wacceptdesc}
+       {\acceptdesc}
+  \Tbox{\xacceptaddress}
+       {\yacceptaddress}
+       {\wacceptaddress}
+       {\ifx\acceptaddress\empty\toname\\\toaddress\else\acceptaddress\fi}
+  \Cbox{\xacceptreference}
+       {\yacceptreference}
+       {\wacceptreference}
+       {\ocrb\acceptreference}
+  \Tbox{\xacceptref}
+       {\yacceptref}
+       {\wacceptref}
+       {\baselineskip=\acceptreferenceskip\ocrb\acceptreference}
+  \Cbox{\xaccepteuros}
+       {\yaccepteuros}
+       {\waccepteuros}
+       {\ocrb\accepteuros}
+  \Cbox{\xacceptaccount}
+       {\yacceptaccount}
+       {\wacceptaccount}
+       {\ocrb\acceptaccount}
+  \Cbox{\xacceptcents}
+       {\yacceptcents}
+       {\wacceptcents}
+       {\ocrb\acceptcents}
+  \Cbox{\xaccepteur}
+       {\yaccepteur}
+       {\waccepteur}
+       {\ocrb\accepteuros}
+  \Cbox{\xacceptct}
+       {\yacceptct}
+       {\wacceptct}
+       {\ocrb\acceptcents}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@catalan}
+% contributed by Cristian Peraferrer:
+%    \begin{macrocode}
+\def\isodoc@catalan{%
+  \gdef\accountdatatext {Dades banc\`aries}
+  \gdef\accountnametext {a nom de}
+  \gdef\accountnotext   {N\'um. de compte}
+  \gdef\amounttext      {Quantitat}
+  \gdef\ccname          {cc}
+  \gdef\cellphonetext   {M\`obil}
+  \gdef\chambertext     {Cambra de comer\c{c}}
+  \gdef\datetext        {Data}
+  \gdef\daystext        {dies}
+  \gdef\descriptiontext {Descripci\'o}
+  \gdef\emailtext       {E-mail}
+  \gdef\enclosurestext  {Annexos:}
+  \gdef\enclosuretext   {Annex:}
+  \gdef\faxtext         {Fax}
+  \gdef\invoicetext     {factura}
+  \gdef\oftext          {de}
+  \gdef\ourreftext      {La nostra refer\`encia}
+  \gdef\pagetext        {P\`agina}
+  \gdef\phonetext       {Tel\`efon}
+  \gdef\referencetext   {Refer\`encia}
+  \gdef\routingnotext   {Nombre de ruta}
+  \gdef\subjecttext     {Assumpte}
+  \gdef\termtext        {Termini del pagament}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {A}
+  \gdef\vatnotext       {N\'um. IVA}
+  \gdef\vattext         {IVA}
+  \gdef\websitetext     {Web}
+  \gdef\yourlettertext  {La seva carta del}
+  \gdef\yourreftext     {La seva refer\`encia}
+  \gdef\date            {\number\day\space\ifcase\month\or
+    gener\or febrer\or mar\c{c}\or abril\or maig\or juny\or
+    juliol\or agost\or setembre\or octubre\or novembre\or desembre\fi
+    \space \number\year
+  }
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@dutch}
+%    \begin{macrocode}
+\def\isodoc@dutch{%
+  \gdef\accountdatatext {Betalingsgegevens}
+  \gdef\accountnametext {ten name van}
+  \gdef\accountnotext   {rekening nr}
+  \gdef\amounttext      {Bedrag}
+  \gdef\ccname          {Cc:}
+  \gdef\cellphonetext   {mobiel}
+  \gdef\chambertext     {kvk}
+  \gdef\datetext        {Datum}
+  \gdef\daystext        {dagen}
+  \gdef\descriptiontext {Omschrijving}
+  \gdef\emailtext       {e-mail}
+  \gdef\enclosurestext  {Bijlagen:}
+  \gdef\enclosuretext   {Bijlage:}
+  \gdef\faxtext         {telefax}
+  \gdef\invoicetext     {rekening}
+  \gdef\oftext          {van}
+  \gdef\ourreftext      {Ons kenmerk}
+  \gdef\pagetext        {Bladnummer}
+  \gdef\phonetext       {telefoon}
+  \gdef\referencetext   {kenmerk}
+  \gdef\routingnotext   {banknummer}
+  \gdef\subjecttext     {Onderwerp:}
+  \gdef\termtext        {betalingstermijn}
+  \gdef\totaltext       {Totaal}
+  \gdef\totext          {Aan}
+  \gdef\vatnotext       {btw nr}
+  \gdef\vattext         {Btw}
+  \gdef\websitetext     {webstek}
+  \gdef\yourlettertext  {Uw brief van}
+  \gdef\yourreftext     {Uw kenmerk}
+  \gdef\date            {\number\day\space\ifcase\month\or
+    januari\or februari\or maart\or april\or mei\or juni\or juli\or
+    augustus\or september\or oktober\or november\or december\fi
+    \space \number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@french}
+%    \begin{macrocode}
+\def\isodoc@french{%
+  \gdef\accountdatatext {Donn\'ees banquaires}
+  \gdef\accountnametext {au nom de}
+  \gdef\accountnotext   {no. compte}
+  \gdef\amounttext      {Montant}
+  \gdef\ccname          {Copie \`a}
+  \gdef\cellphonetext   {portable}
+  \gdef\chambertext     {c.c.i.}
+  \gdef\datetext        {Date:}
+  \gdef\daystext        {jours}
+  \gdef\descriptiontext {Description}
+  \gdef\emailtext       {email}
+  \gdef\enclosurestext  {Pi\`eces jointes:}
+  \gdef\enclosuretext   {Pi\`ece jointe:}
+  \gdef\faxtext         {t\'el\'efax}
+  \gdef\invoicetext     {facture}
+  \gdef\oftext          {de}
+  \gdef\ourreftext      {Nos r\'ef\'erences:}
+  \gdef\pagetext        {Page}
+  \gdef\phonetext       {t\'el\'ephone}
+  \gdef\referencetext   {r\'ef\'erence}
+  \gdef\routingnotext   {num\'ero d'acheminement}
+  \gdef\subjecttext     {Objet:}
+  \gdef\termtext        {terme}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {\`A l'attention de}
+  \gdef\vatnotext       {no. T.V.A.}
+  \gdef\vattext         {T.V.A.}
+  \gdef\websitetext     {site Web}
+  \gdef\yourlettertext  {Votre lettre du}
+  \gdef\yourreftext     {Vos r\'ef\'erences:}
+  \gdef\date            {\number\day\ifnum\day=1$^{er}$\fi\space\ifcase\month\or
+    janvier\or f\'evrier\or mars\or avril\or mai\or juin\or
+    juillet\or ao\^ut\or septembre\or octobre\or
+    novembre\or d\'ecembre\fi \space \number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@german}
+%    \begin{macrocode}
+\def\isodoc@german{%
+  \gdef\accountdatatext {Bezahlungsdaten}
+  \gdef\accountnametext {Name}
+  \gdef\accountnotext   {Konto Nr}
+  \gdef\amounttext      {Betrag}
+  \gdef\ccname          {Kopien an}
+  \gdef\cellphonetext   {Handy}
+  \gdef\chambertext     {Register Nr}
+  \gdef\datetext        {Datum}
+  \gdef\daystext        {Tage}
+  \gdef\descriptiontext {Umschreibung}
+  \gdef\emailtext       {E-mail}
+  \gdef\enclosurestext  {Anlagen:}
+  \gdef\enclosuretext   {Anlage:}
+  \gdef\faxtext         {Telefax}
+  \gdef\invoicetext     {rechnung}
+  \gdef\oftext          {aus}
+  \gdef\ourreftext      {Unser Zeichen}
+  \gdef\pagetext        {Seite}
+  \gdef\phonetext       {Telefon}
+  \gdef\referencetext   {Beleg Nr}
+  \gdef\routingnotext   {BLZ}
+  \gdef\subjecttext     {Betrifft:}
+  \gdef\termtext        {Zahlungstermin}
+  \gdef\totaltext       {Insgesamt}
+  \gdef\totext          {An}
+  \gdef\vatnotext       {Ustid Nr}
+  \gdef\vattext         {MwSt}
+  \gdef\websitetext     {Webseite}
+  \gdef\yourlettertext  {Ihr Brief vom}
+  \gdef\yourreftext     {Ihr Zeichen}
+  \gdef\date            {\number\day.\space\ifcase\month\or
+    Januar\or Februar\or M\"arz\or April\or Mai\or Juni\or
+    Juli\or August\or September\or Oktober\or November\or Dezember\fi
+    \space\number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@italian}
+% contributed by Walter Giocoso:
+%    \begin{macrocode}
+\def\isodoc@italian{%
+  \gdef\accountdatatext {Coordinate bancarie}
+  \gdef\accountnametext {intestato a}
+  \gdef\accountnotext   {n$^o$~del conto}
+  \gdef\amounttext      {Prezzo}
+  \gdef\ccname          {Per conoscenza a:}
+  \gdef\cellphonetext   {cellulare:}
+  \gdef\chambertext     {}
+  \gdef\datetext        {Data:}
+  \gdef\daystext        {giorni}
+  \gdef\descriptiontext {Descrizione}
+  \gdef\emailtext       {e-mail:}
+  \gdef\enclosurestext  {Allegati:}
+  \gdef\enclosuretext   {Allegato:}
+  \gdef\faxtext         {fax:}
+  \gdef\invoicetext     {fattura}
+  \gdef\oftext          {di}
+  \gdef\ourreftext      {Nostro riferimento:}
+  \gdef\pagetext        {Pagina}
+  \gdef\phonetext       {telefono:}
+  \gdef\referencetext   {riferimento}
+  \gdef\routingnotext   {numero di routing}
+  \gdef\subjecttext     {Oggetto:}
+  \gdef\termtext        {scadenza}
+  \gdef\totaltext       {Totale}
+  \gdef\totext          {All'attenzione di:}
+  \gdef\vatnotext       {Partita I.V.A.}
+  \gdef\vattext         {I.V.A.}
+  \gdef\websitetext     {sito Web:}
+  \gdef\yourlettertext  {Vostra lettera del:}
+  \gdef\yourreftext     {Vostro riferimento:}
+  \gdef\date            {\number\day\ifnum\day=1\fi
+    ~\ifcase\month\or
+    Gennaio\or Febbraio\or Marzo\or Aprile\or Maggio\or Giugno\or
+    Luglio\or Agosto\or Settembre\or Ottobre\or Novembre\or Dicembre\fi
+    \space \number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@norsk}
+% contributed by Sveinung Heggen:
+%    \begin{macrocode}
+\def\isodoc@norsk       {%
+  \gdef\accountdatatext {betales til}
+  \gdef\accountnametext {til}
+  \gdef\accountnotext   {faktura nr}
+  \gdef\amounttext      {Bel\o{}p}
+  \gdef\ccname          {kopi til:}
+  \gdef\cellphonetext   {mobil}
+  \gdef\chambertext     {}
+  \gdef\datetext        {Dato}
+  \gdef\daystext        {dager}
+  \gdef\descriptiontext {Beskrivelse}
+  \gdef\emailtext       {e-post}
+  \gdef\enclosurestext  {Vedlegg:}
+  \gdef\enclosuretext   {Vedlegg:}
+  \gdef\faxtext         {telefaks}
+  \gdef\invoicetext     {faktura}
+  \gdef\oftext          {av}
+  \gdef\ourreftext      {V\aa{}r ref:}
+  \gdef\pagetext        {Side}
+  \gdef\phonetext       {telefon}
+  \gdef\referencetext   {referanse}
+  \gdef\routingnotext   {routing-nummer}
+  \gdef\subjecttext     {Vedr:}
+  \gdef\termtext        {betalingsfrist}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {Til}
+  \gdef\vatnotext       {Org. nr.}
+  \gdef\vattext         {Mva}
+  \gdef\websitetext     {hjemmeside}
+  \gdef\yourlettertext  {Deres brev av}
+  \gdef\yourreftext     {Deres ref:}
+  \gdef\date            {\number\day.\space\ifcase\month\or
+    januar\or februar\or mars\or april\or mai\or juni\or
+    juli\or august\or september\or oktober\or november\or desember\fi
+   \space \number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@serbian}
+% contributed by Zoran T. Filipovic:
+%    \begin{macrocode}
+\def\isodoc@serbian	{%
+  \gdef\totaltext	{Ukupno}
+  \gdef\vattext		{PDV}
+  \gdef\accountdatatext	{Podaci o bankarskom sektoru}
+  \gdef\accountnametext	{na ime}
+  \gdef\accountnotext	{Ra\v cun br.}
+  \gdef\amounttext	{Iznos}
+  \gdef\ccname		{Kopije}
+  \gdef\cellphonetext	{Mobilni}
+  \gdef\chambertext	{Spisak br.}
+  \gdef\datetext	{Datum}
+  \gdef\daystext	{dana}
+  \gdef\descriptiontext	{Opis}
+  \gdef\emailtext	{Email}
+  \gdef\enclosurestext	{Prilozi:}
+  \gdef\enclosuretext	{Prilog:}
+  \gdef\faxtext		{Telefax}
+  \gdef\invoicetext	{faktura}
+  \gdef\oftext		{od}
+  \gdef\ourreftext	{Na\v s broj}
+  \gdef\pagetext	{Strana}
+  \gdef\phonetext	{Telefon}
+  \gdef\referencetext	{Dokumet br.}
+  \gdef\routingnotext   {BLZ}
+  \gdef\subjecttext	{Predmet:}
+  \gdef\termtext	{rok pla\' canja}
+  \gdef\totext		{U}
+  \gdef\vatnotext	{porez br.}
+  \gdef\websitetext	{Website}
+  \gdef\yourlettertext	{Va\v se pismo od}
+  \gdef\yourreftext	{Va\v s broj}
+  \gdef\date{\number\day.~\ifcase\month\or
+    Januar\or Februar\or Mart\or April\or Maj\or Jun\or
+    Jul\or Avgust\or Septembar\or Oktobar\or Novembar\or Decembar\fi
+    \space\number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@spanish}
+% contributed by Cristian Peraferrer:
+%    \begin{macrocode}
+\def\isodoc@spanish{%
+  \gdef\accountdatatext {Datos bancarios}
+  \gdef\accountnametext {a nombre de}
+  \gdef\accountnotext   {N\'um. de cuenta}
+  \gdef\amounttext      {Cantidad}
+  \gdef\ccname          {cc}
+  \gdef\cellphonetext   {M\'ovil}
+  \gdef\chambertext     {C\'amara de comercio}
+  \gdef\datetext        {Fecha}
+  \gdef\daystext        {d\'{\i}as}
+  \gdef\descriptiontext {Descripci\'on}
+  \gdef\emailtext       {E-mail}
+  \gdef\enclosurestext  {Anexos:}
+  \gdef\enclosuretext   {Anexo:}
+  \gdef\faxtext         {Fax}
+  \gdef\invoicetext     {factura}
+  \gdef\oftext          {de}
+  \gdef\ourreftext      {Nuestra referencia}
+  \gdef\pagetext        {P\'agina}
+  \gdef\phonetext       {Tel\'efono}
+  \gdef\referencetext   {Referencia}
+  \gdef\routingnotext   {n\'umero de ruta}
+  \gdef\subjecttext     {Asunto}
+  \gdef\termtext        {Plazo de pago}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {A}
+  \gdef\vatnotext       {N\'um. IVA}
+  \gdef\vattext         {IVA}
+  \gdef\websitetext     {Web}
+  \gdef\yourlettertext  {Su carta de}
+  \gdef\yourreftext     {Su referencia}
+  \gdef\date            {\number\day\space\ifcase\month\or
+    enero\or febrero\or marzo\or abril\or mayo\or junio\or
+    julio\or agosto\or septiembre\or octubre\or noviembre\or diciembre\fi
+    \space \number\year
+  }
+}
+% \DescribeMacro{\isodoc@UKenglish}
+%    \begin{macrocode}
+\def\isodoc@UKenglish{%
+  \gdef\accountdatatext {Banking data}
+  \gdef\accountnametext {in the name of}
+  \gdef\accountnotext   {Account no.}
+  \gdef\amounttext      {Amount}
+  \gdef\ccname          {cc}
+  \gdef\cellphonetext   {cellphone}
+  \gdef\chambertext     {ch.comm.}
+  \gdef\datetext        {Date}
+  \gdef\daystext        {days}
+  \gdef\descriptiontext {Description}
+  \gdef\emailtext       {email}	
+  \gdef\enclosurestext  {Enclosures:}
+  \gdef\enclosuretext   {Enclosure:}
+  \gdef\faxtext         {telefax}
+  \gdef\invoicetext     {invoice}
+  \gdef\oftext          {of}
+  \gdef\ourreftext      {Our reference}
+  \gdef\pagetext        {Page}
+  \gdef\phonetext       {telephone}
+  \gdef\referencetext   {Reference}
+  \gdef\routingnotext   {Routing no}
+  \gdef\subjecttext     {Subject:}
+  \gdef\termtext        {term of payment}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {To}
+  \gdef\vatnotext       {vat no.}
+  \gdef\vattext         {Vat}
+  \gdef\websitetext     {website}
+  \gdef\yourlettertext  {Your letter of}
+  \gdef\yourreftext     {Your reference}
+  \gdef\date{\ifcase\day\or
+     1st\or  2nd\or  3rd\or  4th\or  5th\or
+     6th\or  7th\or  8th\or  9th\or 10th\or
+    11th\or 12th\or 13th\or 14th\or 15th\or
+    16th\or 17th\or 18th\or 19th\or 20th\or
+    21st\or 22nd\or 23rd\or 24th\or 25th\or
+    26th\or 27th\or 28th\or 29th\or 30th\or
+    31st\fi\space\ifcase\month\or
+    January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December\fi
+    \space \number\year}
+}
+%    \end{macrocode}
+% \DescribeMacro{\isodoc@USenglish}
+%    \begin{macrocode}
+\def\isodoc@USenglish{%
+  \gdef\accountdatatext {Bank details}
+  \gdef\accountnametext {in the name of}
+  \gdef\accountnotext   {Account no.}
+  \gdef\amounttext      {Amount}
+  \gdef\ccname          {cc}
+  \gdef\cellphonetext   {cellphone}
+  \gdef\chambertext     {ch.comm.}
+  \gdef\datetext        {Date}
+  \gdef\daystext        {days}
+  \gdef\descriptiontext {Description}
+  \gdef\emailtext       {email}
+  \gdef\enclosurestext  {Enclosures:}
+  \gdef\enclosuretext   {Enclosure:}
+  \gdef\faxtext         {telefax}
+  \gdef\invoicetext     {invoice}
+  \gdef\oftext          {of}
+  \gdef\ourreftext      {Our reference}
+  \gdef\pagetext        {Page}
+  \gdef\phonetext       {telephone}
+  \gdef\referencetext   {Reference}
+  \gdef\routingnotext   {Routing no}
+  \gdef\subjecttext     {Subject:}
+  \gdef\termtext        {term of payment}
+  \gdef\totaltext       {Total}
+  \gdef\totext          {To}
+  \gdef\vatnotext       {vat no.}
+  \gdef\vattext         {Vat}
+  \gdef\websitetext     {website}
+  \gdef\yourlettertext  {Your letter of}
+  \gdef\yourreftext     {Your reference}
+  \gdef\date            {\ifcase\month\or
+    January\or February\or March\or April\or May\or June\or
+    July\or August\or September\or October\or November\or December\fi
+    \space\number\day, \number\year}
+}
+%    \end{macrocode}
+% \Finale
+\endinput
+$Id: isodoc.dtx,v 1.35 2012/02/19 20:14:36 wybo Exp $

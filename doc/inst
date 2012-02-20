@@ -1,0 +1,109 @@
+#!/bin/bash
+
+NAME=isodoc
+# this script creates and installs the NAME class and its
+# documentation, and can make a zip for CTAN uploads
+
+# ./inst            : create everything, install in local tree, make zip for CTAN
+# ./inst clean      : remove all that can be restored
+# ./inst zip        : make a zip file for CTAN
+
+function die {
+  echo "$@"
+  exit 1
+}
+
+function clean() { # remove all that can be restored,
+                   # except NAME.cls and NAME.pdf
+  for i in *.tex; do
+    mk -C $i
+  done
+  mk -c $NAME
+  rm -f chopin* *.png *.jpg # these are in binaries.m64
+  rm -f logo[12].pdf *.txt
+  rm -f isodocsymbols.sty
+}
+
+# The script needs:
+# mk        http://www.ctan.org/tex-archive/support/latex_maker
+# vpp       http://www.ctan.org/tex-archive/support/view_print_ps_pdf/
+# unzip     unzip-5.52-14.rpm
+# uudecode  sharutils-4.6-13.rpm
+
+for i in mk vpp unzip uudecode; do 
+  type $i &> /dev/null || die executable $i not found
+done
+
+LOCAL=`kpsewhich --expand-var '$TEXMFLOCAL'`     # local tex dir
+if [ "$LOCAL" = "" ]; then
+  echo 'Could not find value for $TEXMFLOCAL'
+  exit 1
+fi
+LOCAL=${LOCAL}tex/latex/$NAME
+ln -sf ../$NAME.dtx
+ln -sf ../$NAME.ins
+ln -sf ../isodocsymbols.sty
+
+
+# binary files are stored cvs as a mime64-encoded zip file binaries.m64
+# pack binaries, if necessary, with:
+#   zip -m binaries chopin* *.jpg *.png
+#   uuencode binaries.zip <binaries.zip > binaries.m64
+#   rm binaries.zip
+# but don't forget to add the original $Id...$ line on top of the new encoded file
+
+case "$1" in 
+clean)
+  clean
+  rm -f $NAME.{cls,pdf,ins,dtx} isodocsymbols.sty
+  ;;
+zip) 
+  echo make zip
+  mv $NAME.cls $NAME.pdf ..
+  clean
+  rm $NAME.dtx $NAME.ins
+  cd ..
+  version=`grep " v[0-9.]\+ $NAME class" $NAME.dtx |sed 's/.* v\([0-9.]\+\) .*/\1/' `
+  zipfile=$NAME-$version.zip
+  zip -Drq $zipfile * -x CVS/*
+  rm $NAME.cls $NAME.pdf
+  ;;
+"")
+  echo unpack binaries
+  uudecode binaries.m64
+  unzip -q binaries
+  rm binaries.zip
+
+  # make verbinput files without $Id-lines
+  echo make example files
+  for i in `grep -l '$\(Id\): ' *.{tex,sty}`; do
+    grep -v '$\(Id\): ' $i >${i%.???}.txt
+  done
+  
+  echo y |tex $NAME.ins >/dev/null
+  for i in *.tex; do
+    echo ___________ $i ___________ 
+    mk --noview --noprint $i
+  done
+  vpp --noview --batch='1 ologo1' logoletter.pdf
+  vpp --noview --batch='2 ologo2' logoletter.pdf
+
+  echo make documentation
+  pdflatex --interaction=batchmode $NAME.dtx > /dev/null
+  test -f $NAME.glo && makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo
+  test -f $NAME.idx && makeindex -q -s gind.ist -o $NAME.ind $NAME.idx
+  pdflatex --interaction=batchmode $NAME.dtx > /dev/null
+  texlog_extract $NAME
+  
+  echo install in local tree
+  rm -rf $LOCAL
+  mkdir -p $LOCAL
+  cp $NAME.{dtx,cls,pdf} isodocsymbols.sty $LOCAL       # install in local tex tree
+  mktexlsr $LOCAL
+  ;;
+*)
+  echo illegal argument
+  exit 1
+  ;;
+esac
+# $Id: inst,v 1.20 2012/02/19 20:18:18 wybo Exp $

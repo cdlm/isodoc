@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+
+# after the addition of new options, two regions of the documentation in
+# isodoc.dtx need to be updated:
+# 1. the body of the definition of \showkeys
+#    listkeys will print that body with the argument `show'
+# 2. The body of the tabular (in the section `Commands'), which shows
+#    the options having a corresponding command.
+#    listkeys will print that body with the argument `defs'
+#    
+# An easy way to replace the data in isodoc.dtx is, using the vim editor: 
+# 1. select the lines (the contents of \def\showkeys, say) with V and then
+# 2. type :!listkeys show 
+
+def usage
+  raise(ArgumentError,"Usage: listkeys defs|show",$0)
+end
+usage if ARGV.size != 1 
+
+type = ARGV.pop
+ARGV.push('isodoc.dtx')
+
+a = []
+# find keys which have a corresponding command:
+a.push($1) if ~ /\\define@key\{isodoc\}\s*\{(.*)\}\s*(\[.*?\])?\s*\{\\def\\/ while gets
+a.sort!
+case type
+  when 'defs'
+    a.each { |v| puts "%20s & \\%s\\NN" % [v,v] }
+  when 'show'
+    n = (a.size + 5) / 5 # n rows, 5 columns each
+    aa = Array.new(n)
+    maxlen = [0,0,0,0,0]
+    0.upto(n) do |y|
+      aa[y] = []
+      0.upto(4) do |x|
+	el = a[y+x*(n+1)]||''  
+	maxlen[x] = [maxlen[x],el.size].max
+        aa[y].push(el)
+      end 
+    end
+    format = "%% "
+    maxlen.each { |l| format << "%-#{l}s &" } 
+    format.chop!
+    format << "\\NN"
+    aa.each { |row| puts format % row }
+  else
+    usage
+end
+
+# $Id: listkeys,v 1.4 2010/01/01 21:59:42 wybo Exp $

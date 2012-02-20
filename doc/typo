@@ -1,0 +1,72 @@
+Typografie wordt meestal toegepast om het doel en de inhoud van
+een tekst te ondersteunen. Een tekst moet bijvoorbeeld prettig
+leesbaar zijn. Daarom worden teksten in boeken en kranten vaak
+uit een lettertype met schreef gezet, maar op het beeldscherm
+juist vaak met een schreefloos lettertype zoals Verdana of Tahoma
+opgemaakt.
+
+Voor een reclame- of waarschuwingsbord is het van belang dat
+woorden opvallen door ze met felle kleuren te accentueren. In een
+lange tekst wordt het juist als storend wordt ervaren wanneer er
+vetgedrukte woorden uitspringen en wordt bij voorkeur cursivering
+gebruikt om de lezer te attenderen.
+
+Ook met andere zaken die de leesbaarheid van een tekst beïnvloeden houdt
+typografie zich bezig. Bijvoorbeeld het gebruik (doelgroep) en de
+indeling van een pagina. De typograaf let op:
+\begin{itemize}
+\item de zetbreedte (regellengte): de breedte van een tekstblok
+of kolom. De typograaf let daarbij op het maximum aantal tekens
+of woorden per regel. Bij een tekst met te lange regels moet
+het oog van de lezer namelijk een te grote afstandssprong maken
+van het eind van de regel naar het begin van de volgende. In
+het algemeen worden maxima gehanteerd van gemiddeld ca. 85
+tekens (inclucief spaties en leestekens) of van gemiddeld
+twaalf woorden.
+
+\item de diverse lettergroottes (corpsen) en -soorten Door een
+combinatie daarvan (naast o.a. kleurgebruik) kan de typograaf de
+diverse tekstelementen visueel onderscheidend maken en daarmee
+de inhoudelijke hiërarchie goed visualiseren en ordenen.
+Letterfamilies bestaan uit diverse lettersoorten, meestal
+minimaal romein (normaal), vet, cursief en vet-cursief. Er zijn
+ook uitgebreide letterfamilies, die dan bijv. als extra
+lettersoort vet-cursief, halfvet, extra vet, versmald en
+verbreed hebben.
+
+\item de interlinie: het wit tussen twee regels.
+
+\item de regelafstand: de grootte van de letter (het korps)
+opgeteld bij de grootte van de interlinie. (Voorbeeld: corps 10
+punt + 4 punt interlinie geeft een regelafstand van 14 punt.)
+
+\item de woordspaties: het wit (de ruimte) tussen twee woorden.
+\item de letterspatiëring: het wit tussen de letters onderling
+\item de leestekens 
+\item de gebruikte letterfamilie(s) (lettertypen).
+\item het vaste (verticale) tussenwit (bij meerdere kolommen)
+\item het bijeenblijven van inhoudelijke eenheden
+\item het bijeenblijven van inhoudelijke eenheden
+\end{itemize}
+Om een bekend voorbeeld te geven: de staartregel van een alinea
+die niet alleen boven aan een pagina mag staan (het zgn.
+'hoerenjong'). Zo bestaat er o.a. ook de 'wees' of de 'weduwe'
+(uit het engels: the 'widow'). Deze termen staan beiden voor de
+eerste regel van een alinea die alleen staat onderaan een pagina.
+
+Voor woordenboeken of kranten,\footnote{en wat u nog maar zelf
+kunt bedenken...} waar ruimte schaars is, worden er opzettelijk
+smalle lettertypen uitgezocht, waardoor het papier efficiënter
+benut kan worden. De marges worden dan uiteraard ook klein
+gehouden. Een voorbeeld is de Lexicon (Bram de Does, 1992), die
+wordt gebruikt in de krant NRC Handelsblad en het woordenboek de
+Dikke Van Dale.
+
+Sommige aspecten en gewoontes van de typografie zijn universeel:
+te lange regels, te weinig interlinie en te kleine woordspaties
+lezen niet prettig. Andere gewoontes zoals het gebruik van
+aanhalingstekens en gedachtestreepjes verschillen van tijd tot
+tijd en van land tot land en daarbinnen nog weer van publicatie
+tot publicatie.
+
+% $Id: typo,v 1.3 2010/01/02 16:50:16 wybo Exp $

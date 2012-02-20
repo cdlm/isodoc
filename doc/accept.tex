@@ -1,0 +1,25 @@
+\documentclass{isodoc}
+\usepackage{isontg}
+\setupdocument{accept,
+  acceptdesc=NTG\\2006,
+  acceptdescription=Contributie 2006,
+  acceptreference=4000 0000 2006 0308,
+  date=20060503,
+  subject=Contributie 2006,
+  nofooter
+}
+\begin{document}
+\invoice[
+  to=W.H. Dekker\\Deilsedijk 60\\4158 CH Deil,
+  acceptaccount=304046221,
+  accepteuros=40,
+  acceptcents=00,
+  ourref=308,
+]{\itable{\iitem{Contributie NTG voor 2006}{40,00}}\\[3ex]
+  \accountdata
+  \begin{textblock}{210}(0,199.5)
+    \noindent\includegraphics[width=210mm]{acceptform.jpg}
+  \end{textblock}
+}
+\end{document}
+$Id: accept.tex,v 1.7 2010/01/01 21:46:57 wybo Exp $

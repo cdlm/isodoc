@@ -1,0 +1,34 @@
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\ProvidesPackage{mystyle}
+  [2010/08/21 v1.1 Letter Company style file for isodoc]
+\RequirePackage{pxfonts}
+
+\setupdocument{return,footer,fold3,
+  autograph       = 0,
+  company         = The Letter Company,
+  returnaddress   = Letter Cy\\Deilsedijk 60\\Deil,
+  who             = Wybo Dekker,
+  street          = Deilsedijk 60,
+  city            = Deil,
+  zip             = 4158 CH,
+  country         = The Netherlands,
+  countrycode     = NL,
+  areacode        = 31,
+  phone           = {87-87\,48\,496},
+  cellphone       = {6-15\,49\,20\,70},
+  fax             = {},
+  website         = www.xs4all.nl,
+  email           = wybo@xs4all.nl,
+  accountno       = {3040\,46221},
+  iban            = nl61pstb0006238747,
+  bic             = pstbnl21,
+  vatno           = 28750482B01,
+  chamber         = 11023220,
+  opening         = L.S.,
+  closing         = Best regards,
+  signature       = W.H.~Dekker
+}
+\graphicspath{{./graphics/}}
+\autograph{2}{.30}{75bp}{87bp}{216bp}{261bp}{signw_marked}
+\endinput
+$Id: mystyle.sty,v 1.9 2012/02/19 20:18:01 wybo Exp $

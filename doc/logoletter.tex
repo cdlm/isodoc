@@ -1,0 +1,43 @@
+%!xelatex
+\documentclass[11pt,twoside]{isodoc}
+\usepackage{logostyle}
+\setupdocument{
+    ourref = 1029,
+yourletter = May 12,
+   yourref = MAPS \#34,
+      date = today,
+   closing = Kind regards,
+ signature = Wybo Dekker,
+enclosures = Isodoc documentatie,
+   subject = Sample letter with the isodoc class,
+ autograph = 2,
+}
+\newcommand{\letterbody}{%
+  This is an example of a letter made with the isodoc class. 
+  It has been compiled with XeLaTeX.
+  Note that the date was set to `today', so the date above the
+  letter depends upon the day of compilation.
+
+  The picture in the logo was designed by Pieter Weltevrede.
+  The text in the logo is Chopin Script, the body text is MinionPro Regular.
+  The text\footnote{gathered from the \TeX-distribution} has no meaning,
+  its only goal is to get a long letter.
+  % It's in dutch, so we select that language:
+  \begin{dutch}
+    \par\input{typo}
+  \end{dutch}
+}
+
+\begin{document}
+\letter[to = Wybo Dekker\\
+             Deilsedijk 60\\
+             4158 CH Deil, 
+             opening = Beste Wybo
+       ]{\letterbody}
+\letter[to = MAPS redactie\\
+             Spuiboulevard 269\\
+             3311 GP Dordrecht, 
+             opening = Beste Taco
+       ]{\letterbody}
+\end{document}
+$Id: logoletter.tex,v 1.5 2010/08/24 19:24:45 wybo Exp $

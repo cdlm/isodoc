@@ -1,0 +1,21 @@
+This is version 0.9 of the isodoc class
+License: LPPL
+
+The isodoc class can be used for the preparation of letters,
+invoices, and, in the future, similar documents. Documents are set
+up with options, thus making the class easily adaptable to user’s
+wishes and extensible for other document types.
+Victor Eijkhout’s NTG brief class, which implements the NEN1026
+standard, was the starting point.
+
+major changes of v0.9 relative to v0.8:
+- subject text uses full textwidth; use newlines (\\) if needed
+- introducing isodocsymbols.sty
+- new option closingcomma
+- subject uses full textwidth
+- new option closingcomma
+- using foreach package for footfields
+- added some missing \NN
+- removed some unwanted whitespace
+
+$Id: README,v 1.9 2012/02/19 20:18:41 wybo Exp $

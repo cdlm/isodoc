@@ -1,0 +1,19 @@
+\documentclass[12pt]{isodoc}
+\usepackage{isowybo}
+\setupdocument{
+  ourref=8234,
+  date=20060401,
+  subject=Declaratie verzending aanmaningen,
+  to=NTG\\Maasstraat 2\\5836 BB Sambeek
+}
+\begin{document}
+\invoice{
+  \itable{
+    \iitem{enveloppen}{6,60}
+    \iitem{postzegels}{9,00}
+    \itotal{15,60}
+  }
+  \\[3ex]\accountdata
+}
+\end{document}
+$Id: invoice.tex,v 1.3 2012/02/19 20:16:12 wybo Exp $

@@ -1,0 +1,22 @@
+\documentclass[11pt]{isodoc}
+\usepackage{mystyle}
+\definecolor{headcolor}{gray}{.5}
+\setupdocument{
+       to  = {TeX Users Group\\
+              1466 NW Naito Parkway, Suite 3141\\
+              Portland, OR 97208-2311\\
+              U.S.A
+             },
+   ourref  = 1029,
+ enclosures = isodoc documentation\\LPPL documentation,
+    subject = An example letter using the isodoc class,
+  autograph = 2,
+}
+
+\begin{document}
+\letter[language=italian]{
+This letter was composed using the \LaTeX{} isodoc class. 
+  \par\input{thuan} % for some body
+}
+\end{document}
+$Id: letter.tex,v 1.5 2012/02/19 20:15:59 wybo Exp $
