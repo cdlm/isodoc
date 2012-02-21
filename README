@@ -1,12 +1,17 @@
-This is version 0.9 of the isodoc class
+This is version 0.10 of the isodoc class
 License: LPPL
 
+Short description:
 The isodoc class can be used for the preparation of letters,
 invoices, and, in the future, similar documents. Documents are set
 up with options, thus making the class easily adaptable to user’s
 wishes and extensible for other document types.
 Victor Eijkhout’s NTG brief class, which implements the NEN1026
 standard, was the starting point.
+
+major changes of v0.10 relative to v0.9
+- bug: missing prefixes for phone numbers
+- added option footorder, setting the order of footer fields
 
 major changes of v0.9 relative to v0.8:
 - subject text uses full textwidth; use newlines (\\) if needed
@@ -18,4 +23,4 @@ major changes of v0.9 relative to v0.8:
 - added some missing \NN
 - removed some unwanted whitespace
 
-$Id: README,v 1.9 2012/02/19 20:18:41 wybo Exp $
+$Id: README,v 1.11 2012/02/21 16:46:43 wybo Exp $

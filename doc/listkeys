@@ -22,7 +22,12 @@ ARGV.push('isodoc.dtx')
 
 a = []
 # find keys which have a corresponding command:
-a.push($1) if ~ /\\define@key\{isodoc\}\s*\{(.*)\}\s*(\[.*?\])?\s*\{\\def\\/ while gets
+while x=gets
+  if x =~ /\\define@key\{isodoc\}\s*\{(.*?)\}/
+    a.push($1)
+  end
+end
+
 a.sort!
 case type
   when 'defs'
@@ -48,4 +53,4 @@ case type
     usage
 end
 
-# $Id: listkeys,v 1.4 2010/01/01 21:59:42 wybo Exp $
+# $Id: listkeys,v 1.5 2012/02/21 16:48:58 wybo Exp $

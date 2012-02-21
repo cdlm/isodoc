@@ -22,7 +22,7 @@
 %% 
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesClass{isodoc}%
-           [2012/02/19 v0.9 isodoc class for letters and invoices]
+           [2012/02/21 v0.10 isodoc class for letters and invoices]
 \ifx\pdfoutput\undefined\else%
 \ifnum\pdfoutput=1\else\ClassError{isodoc}{Compile me with pdflatex or xelatex!}{}
 \fi\fi
@@ -109,24 +109,25 @@
 \newcount\subjectpos
 \newcount\openingpos
 \newcount\textskip
+\define@key{isodoc}{footorder} {\def\footorder{#1}}
+                                \def\footorder{website;phone;cellphone;fax;email}
 \define@key{isodoc}{footer}  []{\footertrue}
                  \newif\iffooter\footerfalse
 \define@key{isodoc}{nofooter}[]{\footerfalse}
 \define@key{isodoc}{areacode}   {\def\areacode{#1}}
                                  \def\areacode{\Undefined{areacode}}
-\define@key{isodoc}{phone}      {\def\phone{#1}}
-                                 \def\phone{}
+\define@key{isodoc}{phone}      {\def\isodoc@phone{#1}}
+                                 \def\isodoc@phone{}
 \define@key{isodoc}{phoneprefix}{\def\phoneprefix{#1}}
                                  \def\phoneprefix{0}
-\define@key{isodoc}{cellphone}  {\def\cellphone{#1}}
-                                 \def\cellphone{}
-\define@key{isodoc}{fax}        {\def\fax{#1}}
-                                 \def\fax{}
+\define@key{isodoc}{cellphone}  {\def\isodoc@cellphone{#1}}
+                                 \def\isodoc@cellphone{}
+\define@key{isodoc}{fax}        {\def\isodoc@fax{#1}}
+                                 \def\isodoc@fax{}
 \define@key{isodoc}{website}    {\def\website{#1}}
                                  \def\website{}
 \define@key{isodoc}{email}      {\def\email{#1}}
                                  \def\email{}
-\def\lead{\ifforeign+\areacode-\else\phoneprefix\fi}
 \define@key{isodoc}{nofold}[]{\yfold=-1mm}
                \newdimen\yfold\yfold=-1mm
 \define@key{isodoc}{foldleft}[]{\xfold=9mm}
@@ -289,15 +290,6 @@
     \ifnum \day   > 31 \ClassError{isodoc}{Illegal date: day>31}{}\fi
   \fi
 }
-\def\footfield#1#2#3{%
-  \ifx#3\empty\else
-    \Tbox{\footcount}{\footerpos}{35}{\noindent
-      {\@hft#1}\\
-        #2#3
-    }
-    \advance\footcount35
-  \fi
-}
 \def\accountdata{
   \textbf{\accountdatatext:}\\
   \begin{tabular}{@{}rl@{}}
@@ -337,37 +329,65 @@
            accountno & \accountno\NN
        addresscenter & \addresscenter\NN
         addresswidth & \addresswidth\NN
+            american & \american\NN
             areacode & \areacode\NN
            autograph & \autograph\NN
                  bic & \bic\NN
+           bodyshift & \bodyshift\NN
            cellphone & \cellphone\NN
              chamber & \chamber\NN
                 city & \city\NN
+             cityzip & \cityzip\NN
              closing & \closing\NN
-        closingcomma & \closingcomma\NN
+         closingskip & \closingskip\NN
              company & \company\NN
              country & \country\NN
          countrycode & \countrycode\NN
             currency & \currency\NN
+                date & \date\NN
+               dutch & \dutch\NN
                email & \email\NN
           enclosures & \enclosures\NN
+             english & \english\NN
                  fax & \fax\NN
+                fill & \fill\NN
+                fold & \fold\NN
+               fold2 & \fold2\NN
+               fold3 & \fold3\NN
+            foldleft & \foldleft\NN
+           foldright & \foldright\NN
+              footer & \footer\NN
+           footorder & \footorder\NN
            forcedate & \forcedate\NN
+             foreign & \foreign\NN
+              french & \french\NN
+              german & \german\NN
+              header & \header\NN
                 iban & \iban\NN
+            language & \language\NN
          leftaddress & \leftaddress\NN
+           localbank & \localbank\NN
          logoaddress & \logoaddress\NN
+              nofill & \nofill\NN
+              nofold & \nofold\NN
+            nofooter & \nofooter\NN
+            noheader & \noheader\NN
+            noreturn & \noreturn\NN
              opening & \opening\NN
         openingcomma & \openingcomma\NN
               ourref & \ourref\NN
                phone & \phone\NN
          phoneprefix & \phoneprefix\NN
+              return & \return\NN
        returnaddress & \returnaddress\NN
         rightaddress & \rightaddress\NN
            routingno & \routingno\NN
+               shift & \shift\NN
            signature & \signature\NN
               street & \street\NN
              subject & \subject\NN
                 term & \term\NN
+                  to & \to\NN
                vatno & \vatno\NN
              website & \website\NN
                  who & \who\NN
@@ -409,6 +429,10 @@
 \newcommand{\letter}[2][]{{%
   \newpage
   \setkeys{isodoc}{#1}
+  \def\isodoc@lead{\ifforeign+\areacode-\else\phoneprefix\fi}
+  \ifx\isodoc@phone\empty\else\def\phone{\isodoc@lead\isodoc@phone}\fi
+  \ifx\isodoc@cellphone\empty\else\def\cellphone{\isodoc@lead\isodoc@cellphone}\fi
+  \ifx\isodoc@fax\empty\else\def\fax{\isodoc@lead\isodoc@fax}\fi
   \ifx\yourlettertext\undefined\ClassWarning{isodoc}{
     You did not use the language option; using the default: UKenglish
   }\isodoc@UKenglish\fi
@@ -422,14 +446,16 @@
   \fancyhf{}
   \if@twoside
     \fancyhead[LE,RO]{\color{headingcolor}%
-       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+    \pagetext\ \thepage\ \oftext{}
+    \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
     \fancyhead[RE,LO]{\color{headingcolor}%
        \totext: \toname\ (\date)}
   \else
     \fancyhead[L]{\color{headingcolor}%
-       \totext: \toname\ (\date)}
+    \totext: \toname\ (\date)}
     \fancyhead[R]{\color{headingcolor}%
-       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+    \pagetext\ \thepage\ \oftext{}
+    \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
   \fi
   \logo
   { \parskip=0pt\parindent=0pt
@@ -488,7 +514,7 @@
         }
         \advance\footcount35
       \fi
-    }{website;phone;cellphone;fax;email} % variabele/optie van maken
+    }{\footorder}
   \fi
   { \parskip=0pt\parindent=0pt
     \begin{textblock*}{3mm}(\xfold,\yfold)%

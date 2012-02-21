@@ -22,7 +22,7 @@
 %<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<class>\ProvidesClass{isodoc}%
 %<*class>
-           [2012/02/19 v0.9 isodoc class for letters and invoices]
+           [2012/02/21 v0.10 isodoc class for letters and invoices]
 %</class>
 %<class>\ifx\pdfoutput\undefined\else%
 %<class>\ifnum\pdfoutput=1\else\ClassError{isodoc}{Compile me with pdflatex or xelatex!}{}
@@ -123,7 +123,32 @@
 %                            headcolor, if defined, colors headings in header and footer;
 %                            foldmarkcolor, if defined, colors foldmark
 %                           }
-%
+% \changes{v0.8}{2010/08/24}{now compatible with XeLaTeX
+%                            made independent of babel/polyglossia packages: user must Require those, if needed
+%                            handling of font and encoding now left to the user
+%                            language names same as in babel (norwegian -> norsk)
+%                            option language added
+%                            option english is synonym for language=UKenglish
+%                            option american is synonym for language=USenglish
+%                            language options /only/ change keyword translations
+%                            new translations added: italian, spanish, catalan, serbian
+%                            option fontpackage removed
+%                            option cityzip moves zip behind city
+%                            now compatible with XeLaTeX
+%                            positioning of headings, subject, opening, body text fixed
+%                            repaired several minor bugs
+%                           }
+% \changes{v0.9}{2012/02/19}{subject text uses full textwidth; use newlines if needed
+%                            introducing isodocsymbols.sty
+%                            new option closingcomma
+%                            subject uses full textwidth
+%                            new option closingcomma
+%                            using foreach package for footfields
+%                            removed some unwanted whitespace
+%                           }
+% \changes{v0.10}{2012/02/21}{bug: missing prefixes for phone numbers
+%                             added option footorder, setting the order of footer fields
+%                            }
 % \DoNotIndex{%
 % \ , \", \', \@auxout, \AtBeginDocument, \AtEndDocument, \Cbox, \CurrentOption,
 % \DeclareOption, \DescribeMacro, \LARGE, \Large, \LoadClass, \ML, \NN,
@@ -407,11 +432,14 @@
 % }
 %
 % \OPTS{Footer fields}{Footer fields are shown in the order in which
-% they appear below; they are empty by default, and empty
-% fields are not displayed.}{
+% they appear below; they are empty by default, and empty fields are not displayed. 
+% The order of the fields can be changed with the \T{footorder} option.}{
 % \T{[no]footer}        & enables or disables printing a page footer; there is room
 %                         for upto four fields, if you set five fields, the last
 %                         one will appear in the right margin.\NN
+% \T{footorder = ...} & changes the order of footer fields. The argument
+%                       should be a semicolon (;) separated list of fieldnames.
+%                       The default is \T{website;phone;cellphone;fax;email}.\NN
 % \T{phoneprefix}       & prefix for phone numbers. The default is `0'; will be changed
 %                         into `+$<$areacode$>$-' if the \T{foreign} option is used.\NN
 % \T{phone = ...}       & if not empty, prints `phone' in the first field of the
@@ -508,17 +536,23 @@
 % |listkeys show|}
 %
 % \noindent\begin{tabular}{@{}lllll@{}}
-% accept            &addresswidth &currency     &ourref        &website    \NN
-% acceptaccount     &areacode     &email        &phone         &who        \NN
-% acceptaddress     &autograph    &enclosures   &phoneprefix   &yourletter \NN
-% acceptcents       &bic          &fax          &returnaddress &yourref    \NN
-% acceptdesc        &cellphone                  &rightaddress  &zip        \NN
-% acceptdescription &chamber      &forcedate    &routingno     &           \NN
-% accepteuros       &city         &iban         &signature     &           \NN
-% acceptreference   &closing      &leftaddress  &street        &           \NN
-% accountname       &company      &logoaddress  &subject       &           \NN
-% accountno         &country      &opening      &term          &           \NN
-% addresscenter     &countrycode  &openingcomma &vatno         &           \NN
+% accept            &cellphone   &fold        &nofill        &subject    \NN
+% acceptaccount     &chamber     &fold2       &nofold        &term       \NN
+% acceptaddress     &city        &fold3       &nofooter      &to         \NN
+% acceptcents       &cityzip     &foldleft    &noheader      &vatno      \NN
+% acceptdesc        &closing     &foldright   &noreturn      &website    \NN
+% acceptdescription &closingskip &footer      &opening       &who        \NN
+% accepteuros       &company     &footorder   &openingcomma  &yourletter \NN
+% acceptreference   &country     &forcedate   &ourref        &yourref    \NN
+% accountname       &countrycode &foreign     &phone         &zip        \NN
+% accountno         &currency    &french      &phoneprefix   &           \NN
+% addresscenter     &date        &german      &return        &           \NN
+% addresswidth      &dutch       &header      &returnaddress &           \NN
+% american          &email       &iban        &rightaddress  &           \NN
+% areacode          &enclosures  &language    &routingno     &           \NN
+% autograph         &english     &leftaddress &shift         &           \NN
+% bic               &fax         &localbank   &signature     &           \NN
+% bodyshift         &fill        &logoaddress &street        &           \NN
 % \end{tabular}
 %
 % \noindent So you could write in your letter: ``please send me the money on my bank
@@ -1009,6 +1043,8 @@
 % A footer is switched on or off with the |footer| and |nofooter| options.
 % The default is the have no footer.
 %    \begin{macrocode}
+\define@key{isodoc}{footorder} {\def\footorder{#1}}
+                                \def\footorder{website;phone;cellphone;fax;email}
 \define@key{isodoc}{footer}  []{\footertrue}
                  \newif\iffooter\footerfalse
 \define@key{isodoc}{nofooter}[]{\footerfalse}
@@ -1029,19 +1065,18 @@
 %    \begin{macrocode}
 \define@key{isodoc}{areacode}   {\def\areacode{#1}}
                                  \def\areacode{\Undefined{areacode}}
-\define@key{isodoc}{phone}      {\def\phone{#1}}
-                                 \def\phone{}
+\define@key{isodoc}{phone}      {\def\isodoc@phone{#1}}
+                                 \def\isodoc@phone{}
 \define@key{isodoc}{phoneprefix}{\def\phoneprefix{#1}}
                                  \def\phoneprefix{0}
-\define@key{isodoc}{cellphone}  {\def\cellphone{#1}}
-                                 \def\cellphone{}
-\define@key{isodoc}{fax}        {\def\fax{#1}}
-                                 \def\fax{}
+\define@key{isodoc}{cellphone}  {\def\isodoc@cellphone{#1}}
+                                 \def\isodoc@cellphone{}
+\define@key{isodoc}{fax}        {\def\isodoc@fax{#1}}
+                                 \def\isodoc@fax{}
 \define@key{isodoc}{website}    {\def\website{#1}}
                                  \def\website{}
 \define@key{isodoc}{email}      {\def\email{#1}}
                                  \def\email{}
-\def\lead{\ifforeign+\areacode-\else\phoneprefix\fi}
 %    \end{macrocode}
 % \subsubsection{Folding mark}
 % \DescribeMacro{nofold}
@@ -1385,24 +1420,6 @@
   \fi
 }
 %    \end{macrocode}
-% \DescribeMacro{\footfield}
-% Create any non-empty footfields, starting at left arguments:
-% \begin{compactenum}
-% \item fieldlabel
-% \item a prefix for the content (for phone numbers)
-% \item the content
-% \end{compactenum}
-%    \begin{macrocode}
-\def\footfield#1#2#3{%
-  \ifx#3\empty\else
-    \Tbox{\footcount}{\footerpos}{35}{\noindent
-      {\@hft#1}\\
-        #2#3
-    }
-    \advance\footcount35
-  \fi
-}
-%    \end{macrocode}
 % \DescribeMacro{\accountdata}
 % Print a table with banking information. Show account number, account
 % name + city, and a reference. If the |foreign| key was used,
@@ -1455,37 +1472,65 @@
            accountno & \accountno\NN
        addresscenter & \addresscenter\NN
         addresswidth & \addresswidth\NN
+            american & \american\NN
             areacode & \areacode\NN
            autograph & \autograph\NN
                  bic & \bic\NN
+           bodyshift & \bodyshift\NN
            cellphone & \cellphone\NN
              chamber & \chamber\NN
                 city & \city\NN
+             cityzip & \cityzip\NN
              closing & \closing\NN
-        closingcomma & \closingcomma\NN
+         closingskip & \closingskip\NN
              company & \company\NN
              country & \country\NN
          countrycode & \countrycode\NN
             currency & \currency\NN
+                date & \date\NN
+               dutch & \dutch\NN
                email & \email\NN
           enclosures & \enclosures\NN
+             english & \english\NN
                  fax & \fax\NN
+                fill & \fill\NN
+                fold & \fold\NN
+               fold2 & \fold2\NN
+               fold3 & \fold3\NN
+            foldleft & \foldleft\NN
+           foldright & \foldright\NN
+              footer & \footer\NN
+           footorder & \footorder\NN
            forcedate & \forcedate\NN
+             foreign & \foreign\NN
+              french & \french\NN
+              german & \german\NN
+              header & \header\NN
                 iban & \iban\NN
+            language & \language\NN
          leftaddress & \leftaddress\NN
+           localbank & \localbank\NN
          logoaddress & \logoaddress\NN
+              nofill & \nofill\NN
+              nofold & \nofold\NN
+            nofooter & \nofooter\NN
+            noheader & \noheader\NN
+            noreturn & \noreturn\NN
              opening & \opening\NN
         openingcomma & \openingcomma\NN
               ourref & \ourref\NN
                phone & \phone\NN
          phoneprefix & \phoneprefix\NN
+              return & \return\NN
        returnaddress & \returnaddress\NN
         rightaddress & \rightaddress\NN
            routingno & \routingno\NN
+               shift & \shift\NN
            signature & \signature\NN
               street & \street\NN
              subject & \subject\NN
                 term & \term\NN
+                  to & \to\NN
                vatno & \vatno\NN
              website & \website\NN
                  who & \who\NN
@@ -1564,6 +1609,10 @@
 \newcommand{\letter}[2][]{{%
   \newpage
   \setkeys{isodoc}{#1}
+  \def\isodoc@lead{\ifforeign+\areacode-\else\phoneprefix\fi}
+  \ifx\isodoc@phone\empty\else\def\phone{\isodoc@lead\isodoc@phone}\fi
+  \ifx\isodoc@cellphone\empty\else\def\cellphone{\isodoc@lead\isodoc@cellphone}\fi
+  \ifx\isodoc@fax\empty\else\def\fax{\isodoc@lead\isodoc@fax}\fi
 %    \end{macrocode}
 % By now, a language should have been chosen; if not, issue a warning
 % and set the language to the default: UKenglish
@@ -1581,14 +1630,16 @@
   \fancyhf{}
   \if@twoside
     \fancyhead[LE,RO]{\color{headingcolor}%
-       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+    \pagetext\ \thepage\ \oftext{}
+    \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
     \fancyhead[RE,LO]{\color{headingcolor}%
        \totext: \toname\ (\date)}
   \else
     \fancyhead[L]{\color{headingcolor}%
-       \totext: \toname\ (\date)}
+    \totext: \toname\ (\date)}
     \fancyhead[R]{\color{headingcolor}%
-       \pagetext\ \thepage\ \oftext{} \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
+    \pagetext\ \thepage\ \oftext{}
+    \begin{NoHyper}\pageref{LastPageOf\thelettercount}\end{NoHyper}}
   \fi
   \logo
 %    \end{macrocode}
@@ -1641,7 +1692,7 @@
     \advance\textskip-12
   \fi
 %    \end{macrocode}
-% Create any non-empty footfields, starting at left;
+% Create any non-empty footfields, starting at the left;
 %    (===>must have to be made variable with an option footfieldorder):
 %    \begin{macrocode}
   \footcount=35
@@ -1655,7 +1706,7 @@
         }
         \advance\footcount35
       \fi
-    }{website;phone;cellphone;fax;email} % variabele/optie van maken
+    }{\footorder}
   \fi
   { \parskip=0pt\parindent=0pt
     \begin{textblock*}{3mm}(\xfold,\yfold)%
@@ -2176,4 +2227,4 @@
 %    \end{macrocode}
 % \Finale
 \endinput
-$Id: isodoc.dtx,v 1.35 2012/02/19 20:14:36 wybo Exp $
+$Id: isodoc.dtx,v 1.36 2012/02/21 16:46:25 wybo Exp $

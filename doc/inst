@@ -39,7 +39,7 @@ if [ "$LOCAL" = "" ]; then
   echo 'Could not find value for $TEXMFLOCAL'
   exit 1
 fi
-LOCAL=${LOCAL}tex/latex/$NAME
+LOCAL=${LOCAL}/tex/latex/$NAME
 ln -sf ../$NAME.dtx
 ln -sf ../$NAME.ins
 ln -sf ../isodocsymbols.sty
@@ -93,7 +93,7 @@ zip)
   test -f $NAME.glo && makeindex -q -s gglo.ist -o $NAME.gls $NAME.glo
   test -f $NAME.idx && makeindex -q -s gind.ist -o $NAME.ind $NAME.idx
   pdflatex --interaction=batchmode $NAME.dtx > /dev/null
-  texlog_extract $NAME
+  texlog_extract $NAME |uniq
   
   echo install in local tree
   rm -rf $LOCAL
@@ -106,4 +106,4 @@ zip)
   exit 1
   ;;
 esac
-# $Id: inst,v 1.20 2012/02/19 20:18:18 wybo Exp $
+# $Id: inst,v 1.22 2012/02/21 16:50:08 wybo Exp $
